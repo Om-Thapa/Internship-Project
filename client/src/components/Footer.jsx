@@ -69,6 +69,7 @@ const Footer = () => {
               Follow Us At
             </h4>
 
+            {/* Todo Add Links */}
             <div className="flex border border-white/20 w-fit">
               <a
                 href="#"

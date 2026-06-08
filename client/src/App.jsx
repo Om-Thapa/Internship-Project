@@ -1,6 +1,6 @@
 import Footer from "./components/Footer"
 import Navbar from "./components/Navbar"
-import { Button } from "./components/ui/button"
+import LandingPage from "./Pages/LandingPage"
 
 function App() {
 
@@ -8,7 +8,7 @@ function App() {
     <>
       <div>
         <Navbar />
-        <div className="w-full py-50 text-9xl mt-16 text-center">Main Body</div>
+        <LandingPage />
         <Footer />
       </div>
     </>
