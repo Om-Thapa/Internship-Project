@@ -42,7 +42,7 @@ export default function ImpactStats() {
         {stats.map((stat, index) => (
           <div
             key={index}
-            className="border border-gray-200 p-10 min-h-[260px]"
+            className="border border-gray-200 p-10 min-h-65"
           >
             <h3 className="text-7xl font-bold text-green-600 mb-4">
               {stat.value}

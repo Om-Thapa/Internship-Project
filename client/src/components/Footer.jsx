@@ -1,5 +1,6 @@
 import React from "react";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -25,9 +26,9 @@ const Footer = () => {
 
             <ul className="space-y-4">
               <li>
-                <a href="/contact" className="text-xl font-semibold">
+                <Link href="/contact" className="text-xl font-semibold">
                   Contact Us
-                </a>
+                </Link>
               </li>
 
               {/* <li>
