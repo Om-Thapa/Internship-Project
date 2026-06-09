@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
-import { useCart } from "@/contexts/cart-context";
+import { useCartStore } from "@/stores/useCartStore";
+import { useCartCount } from "@/stores/cartSelectors";
 
 const Navbar = () => {
-  const { openCart } = useCart();
+  const openCart = useCartStore((state) => state.openCart);
+
+  const cartCount = useCartCount();
 
   return (
     <nav className="fixed inset-x-0 top-0 z-50 bg-white/95 border-b border-green-100 shadow-sm backdrop-blur-sm">
@@ -31,9 +34,16 @@ const Navbar = () => {
           aria-label="Open cart"
         >
           <ShoppingCart size={24} />
-          <span className="absolute -top-2 -right-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-green-600 text-[10px] font-bold text-white">
+
+          {/* <span className="absolute -top-2 -right-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-green-600 text-[10px] font-bold text-white">
             2
-          </span>
+          </span> */}
+
+          {cartCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-green-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs">
+              {cartCount}
+            </span>
+          )}
         </button>
       </div>
     </nav>

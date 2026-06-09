@@ -35,7 +35,7 @@ const LandingPage = () => {
   return (
     <div className="w-full text-6xl mt-16 text-center">
       {/* Hero Product */}
-      <section className="mt-18 bg-yellow-400 relative overflow-hidden">
+      <section className="mt-18 bg-linear-to-r from-cyan-400 via-emerald-400 to-blue-500 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 py-20">
           <div className="grid lg:grid-cols-2 items-center gap-12">
             <div>
@@ -51,9 +51,9 @@ const LandingPage = () => {
                 Crispy, delicious and packed with flavour.
               </p>
 
-              <button className="mt-8 bg-black text-white px-8 py-4 rounded-lg font-semibold">
+              {/* <button className="mt-8 bg-black text-white px-8 py-4 rounded-lg font-semibold">
                 Shop Collection
-              </button>
+              </button> */}
             </div>
 
             <div className="relative">
@@ -104,6 +104,7 @@ const LandingPage = () => {
           {products.map((product) => (
             <ProductCard
               key={product.id}
+              id={product.id}
               image={product.image}
               name={product.name}
               price={product.price}

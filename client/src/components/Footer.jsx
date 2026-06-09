@@ -26,7 +26,7 @@ const Footer = () => {
 
             <ul className="space-y-4">
               <li>
-                <Link href="/contact" className="text-xl font-semibold">
+                <Link to="/contact" className="text-xl font-semibold">
                   Contact Us
                 </Link>
               </li>
