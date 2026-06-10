@@ -108,7 +108,7 @@ const Footer = () => {
           {/* Company Details */}
           <div>
             <p className="text-sm text-gray-400">
-              © 2026 Renma Inovation Pvt Lmt. All rights reserved.
+              © 2026 RENMA INNOVATION Pvt Lmt. All rights reserved.
             </p>
             <p className="text-sm text-gray-400">CIN: U10733KA2018PTC109651</p>
             <p className="text-sm text-gray-400">DPIIT No: XXXXXXXX</p>
