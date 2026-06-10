@@ -1,16 +1,28 @@
 import { Link } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
+import { Menu, ShoppingCart } from "lucide-react";
+
 import { useCartStore } from "@/stores/useCartStore";
 import { useCartCount } from "@/stores/cartSelectors";
 
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+
 const Navbar = () => {
   const openCart = useCartStore((state) => state.openCart);
-
   const cartCount = useCartCount();
 
   return (
     <nav className="fixed inset-x-0 top-0 z-50 bg-white/95 border-b border-green-100 shadow-sm backdrop-blur-sm">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        {/* Logo */}
+        {/* <SheetTrigger className="md:hidden" asChild>
+          <button
+            type="button"
+            className="rounded-full border border-gray-200 bg-white p-3 text-gray-700 transition hover:border-green-300 hover:text-green-600"
+            aria-label="Open menu"
+          >
+            <Menu size={24} />
+          </button>
+        </SheetTrigger> */}
         <Link
           to="/"
           className="font-sans text-xl font-semibold rounded-2xl bg-green-500/80 px-5 py-3 text-white"
@@ -18,33 +30,79 @@ const Navbar = () => {
           PurePuff
         </Link>
 
+        {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8 text-base font-medium text-gray-700">
           <Link to="/" className="transition hover:text-green-600">
             Home
           </Link>
+
           <Link to="/contact" className="transition hover:text-green-600">
             Contact
           </Link>
+
+          <a href="#products" className="transition hover:text-green-600">
+            Products
+          </a>
         </div>
 
-        <button
-          type="button"
-          onClick={openCart}
-          className="relative rounded-full border border-gray-200 bg-white p-3 text-gray-700 transition hover:border-green-300 hover:text-green-600"
-          aria-label="Open cart"
-        >
-          <ShoppingCart size={24} />
+        {/* Right Side Actions */}
+        <div className="flex items-center gap-3">
+          {/* Mobile Navigation */}
+          <div className="md:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <button
+                  type="button"
+                  className="rounded-full border border-gray-200 bg-white p-3 text-gray-700 transition hover:border-green-300 hover:text-green-600"
+                  aria-label="Open menu"
+                >
+                  <Menu size={24} />
+                </button>
+              </SheetTrigger>
 
-          {/* <span className="absolute -top-2 -right-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-green-600 text-[10px] font-bold text-white">
-            2
-          </span> */}
+              <SheetContent side="left" className="w-70">
+                <div className="mt-12 flex flex-col gap-6">
+                  <Link
+                    to="/"
+                    className="text-lg font-semibold hover:text-green-600"
+                  >
+                    Home
+                  </Link>
 
-          {cartCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-green-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs">
-              {cartCount}
-            </span>
-          )}
-        </button>
+                  <Link
+                    to="/contact"
+                    className="text-lg font-semibold hover:text-green-600"
+                  >
+                    Contact
+                  </Link>
+
+                  <a
+                    href="#products"
+                    className="text-lg font-semibold hover:text-green-600"
+                  >
+                    Products
+                  </a>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+
+          {/* Cart Button */}
+          <button
+            type="button"
+            onClick={openCart}
+            className="relative rounded-full border border-gray-200 bg-white p-3 text-gray-700 transition hover:border-green-300 hover:text-green-600"
+            aria-label="Open cart"
+          >
+            <ShoppingCart size={24} />
+
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-600 text-xs font-bold text-white">
+                {cartCount}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
     </nav>
   );

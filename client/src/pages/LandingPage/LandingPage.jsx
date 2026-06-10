@@ -4,33 +4,9 @@ import ProductMockup from "@/pages/LandingPage/Components/ProductMockup";
 import React from "react";
 import AboutPurePuff from "./Components/AboutPurePuff";
 
+import products from "@/data/products";
+
 const LandingPage = () => {
-  const products = [
-    {
-      id: 1,
-      image: "/Placeholder.png",
-      name: "Mini Samosa | No Palm Oil | With 2 Chutneys Inside",
-      price: 105,
-    },
-    {
-      id: 2,
-      image: "/Placeholder.png",
-      name: "Mini Kachori | No Palm Oil | With 2 Chutneys Inside",
-      price: 105,
-    },
-    {
-      id: 3,
-      image: "/Placeholder.png",
-      name: "GO DESi Minis: Dark Choco Kaju Katli",
-      price: 250,
-    },
-    {
-      id: 4,
-      image: "/Placeholder.png",
-      name: "Kolkata Jhalmuri | Made with Mustard Oil | Pack of 3",
-      price: 225,
-    },
-  ];
 
   return (
     <div className="w-full text-6xl mt-16 text-center">
@@ -96,7 +72,7 @@ const LandingPage = () => {
         />
       </section>
 
-      <section className="py-20 px-8">
+      <section id="products" className="py-20 px-8">
         <h1 className="text-6xl text-green-400 font-bold font-serif">
           Our Products
         </h1>

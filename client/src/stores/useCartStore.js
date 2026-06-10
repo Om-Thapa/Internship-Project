@@ -1,5 +1,4 @@
 import { create } from "zustand";
-// Todo: Add persist localStorage
 import { persist } from "zustand/middleware";
 
 export const useCartStore = create(
