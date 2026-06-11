@@ -6,7 +6,7 @@ export default function AboutPurePuff() {
           {/* Left Side */}
           <div className="flex justify-center">
             <img
-              src="/Placeholder.png"
+              src="/FROGGU-removebg-preview.png"
               alt="PurePuff Mascot"
               className="w-full max-w-md"
             />

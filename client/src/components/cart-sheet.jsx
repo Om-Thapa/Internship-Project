@@ -1,5 +1,6 @@
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -11,6 +12,7 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 
 import { useCartStore } from "@/stores/useCartStore";
 import { useCartTotal } from "@/stores/cartSelectors";
+import { Link } from "react-router-dom";
 
 export default function CartSheet() {
   const isCartOpen = useCartStore((state) => state.isCartOpen);
@@ -118,9 +120,7 @@ export default function CartSheet() {
           {/* Total */}
           <div className="flex items-center justify-between">
             <span className="text-lg font-semibold">Total</span>
-            <span className="text-2xl font-bold">
-              ₹{finalTotal}
-            </span>
+            <span className="text-2xl font-bold">₹{finalTotal}</span>
           </div>
 
           {/* Shipping Message */}
@@ -129,9 +129,16 @@ export default function CartSheet() {
           </p>
 
           {/* Checkout Button */}
-          <Button size="lg" className="w-full bg-green-600 hover:bg-green-700">
-            Checkout
-          </Button>
+          <SheetClose asChild>
+            <Link to="/cart">
+              <Button
+                size="lg"
+                className="w-full bg-green-600 hover:bg-green-700"
+              >
+                Checkout
+              </Button>
+            </Link>
+          </SheetClose>
         </div>
       </SheetContent>
     </Sheet>

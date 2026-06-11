@@ -6,6 +6,7 @@ import ContactPage from "./pages/ContactUs/ContactPage";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import NotFound from "./pages/NotFound/NotFoundPage";
 import CartSheet from "./components/cart-sheet";
+import CartPage from "./pages/CartPage/CartPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Routes>
             <Route path="" element={<LandingPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/cart" element={<CartPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </ErrorBoundary>

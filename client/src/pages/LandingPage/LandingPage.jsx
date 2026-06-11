@@ -34,7 +34,7 @@ const LandingPage = () => {
 
             <div className="relative">
               <img
-                src="/Placeholder.png"
+                src="/CANDY TN.png"
                 alt="Product"
                 className="w-full max-w-2xl mx-auto drop-shadow-2xl"
               />
@@ -53,20 +53,20 @@ const LandingPage = () => {
 
       <section className="mt-10">
         <ProductMockup
-          image="/Placeholder.png"
+          image="/Purepuff_candy.jpeg"
           title="Mini Kachori"
           description="Crispy outside, flavourful inside. Made without palm oil and served with delicious chutneys."
         />
 
         <ProductMockup
-          image="/Placeholder.png"
+          image="/Purepuff_candy.jpeg"
           title="Kolkata Jhalmuri"
           description="Authentic Bengali street-style snack made with mustard oil and traditional spices."
           reverse
         />
 
         <ProductMockup
-          image="/Placeholder.png"
+          image="/Purepuff_candy.jpeg"
           title="Dark Choco Kaju Katli"
           description="A modern twist on traditional Indian sweets. Rich chocolate meets premium cashews."
         />

@@ -4,7 +4,7 @@ import { Menu, ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/stores/useCartStore";
 import { useCartCount } from "@/stores/cartSelectors";
 
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const Navbar = () => {
   const openCart = useCartStore((state) => state.openCart);
@@ -13,7 +13,7 @@ const Navbar = () => {
   return (
     <nav className="fixed inset-x-0 top-0 z-50 bg-white/95 border-b border-green-100 shadow-sm backdrop-blur-sm">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-4 text-base font-medium text-gray-700">
+        <div className="flex items-center text-base font-medium text-gray-700">
           {/* Mobile Navigation */}
           <div className="md:hidden">
             <Sheet>
@@ -29,37 +29,48 @@ const Navbar = () => {
 
               <SheetContent side="left" className="w-70">
                 <div className="mt-8 ml-5 flex flex-col gap-4">
-                  <Link
-                    to="/"
-                    className="text-lg font-semibold text-green-400"
-                  >
-                    Home
-                  </Link>
+                  <SheetClose asChild>
+                    <Link
+                      to="/"
+                      className="text-lg font-semibold text-green-400"
+                    >
+                      Home
+                    </Link>
+                  </SheetClose>
 
-                  <Link
-                    to="/contact"
-                    className="text-lg font-semibold text-green-400"
-                  >
-                    Contact
-                  </Link>
+                  <SheetClose asChild>
+                    <Link
+                      to="/contact"
+                      className="text-lg font-semibold text-green-400"
+                    >
+                      Contact
+                    </Link>
+                  </SheetClose>
 
-                  <a
-                    href="#products"
-                    className="text-lg font-semibold text-green-400"
-                  >
-                    Products
-                  </a>
+                  {/* <SheetTrigger>
+                    <Link
+                      to="/#products"
+                      className="text-lg font-semibold text-green-400"
+                    >
+                      Products
+                    </Link>
+                  </SheetTrigger> */}
                 </div>
               </SheetContent>
             </Sheet>
           </div>
 
           {/* Logo */}
-          <Link
-            to="/"
-            className="font-sans text-xl font-semibold rounded-2xl bg-green-500/80 px-5 py-3 text-white"
-          >
-            PurePuff
+          <Link to="/" className="flex gap-6">
+            <div className="object-contain size-12">
+              <img src="/LOGO.jpg.jpeg" alt="Logo" />
+            </div>
+            {/* <div className="object-contain size-12">
+              <img src="/FROGGU-removebg-preview.png" alt="Logo" />
+            </div> */}
+            <div className="hidden md:block font-sans text-xl font-semibold rounded-2xl bg-green-500/80 px-5 py-3 text-white">
+              PurePuff
+            </div>
           </Link>
         </div>
 
@@ -73,9 +84,9 @@ const Navbar = () => {
             Contact
           </Link>
 
-          <a href="#products" className="transition hover:text-green-600">
+          {/* <a href="#products" className="transition hover:text-green-600">
             Products
-          </a>
+          </a> */}
         </div>
 
         {/* Right Side Actions */}
