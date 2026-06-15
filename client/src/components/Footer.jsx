@@ -42,7 +42,7 @@ const Footer = () => {
           {/* Contact Info */}
           <div className="space-y-8">
             <div>
-              <p className="text-sm mb-2">For Queries email us:</p>
+              <p className="text-sm mb-2 text-gray-400">For Queries email us:</p>
 
               <a
                 href="mailto:welovetalking@godesi.in"
@@ -53,7 +53,7 @@ const Footer = () => {
             </div>
 
             <div>
-              <p className="text-sm mb-2">For Any Order Related Queries</p>
+              <p className="text-sm mb-2 text-gray-400">For Any Order Related Queries</p>
 
               <a
                 href="tel:+919353756891"
@@ -72,19 +72,19 @@ const Footer = () => {
 
             {/* Todo Add Links */}
             <div className="flex border border-white/20 w-fit">
-              <a
-                href="#"
+              <Link
+                to="#"
                 className="w-16 h-16 flex items-center justify-center border-r border-white/20 hover:bg-white/10 transition"
               >
                 <FaFacebookF size={20} />
-              </a>
+              </Link>
 
-              <a
-                href="#"
+              <Link
+                to="https://www.instagram.com/renmainnovations"
                 className="w-16 h-16 flex items-center justify-center hover:bg-white/10 transition"
               >
                 <FaInstagram size={20} />
-              </a>
+              </Link>
             </div>
           </div>
 

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 
 import { useCartStore } from "@/stores/useCartStore";
 import { useCartTotal } from "@/stores/cartSelectors";
+import { Link } from "react-router-dom";
 
 export default function CartPage() {
   const items = useCartStore((state) => state.items);
@@ -26,6 +27,39 @@ export default function CartPage() {
   const amountRemaining = freeShippingThreshold - subtotal;
 
   const progress = Math.min((subtotal / freeShippingThreshold) * 100, 100);
+
+  if (items.length === 0) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="max-w-4xl mx-auto py-15">
+          <div className="flex flex-col items-center text-center">
+            {/* Illustration */}
+            <img
+              src="/empty-cart.png"
+              alt="Empty Cart"
+              className="w-72 h-72 object-contain"
+            />
+            
+            <h1 className="text-4xl font-bold">
+              🌿 Your Cart Feels Light
+            </h1>
+
+            <p className="mt-4 max-w-md text-lg text-muted-foreground">
+              Add some PurePuff products and take a step toward better
+              respiratory wellness.
+            </p>
+
+            <Link
+              to="/"
+              className="mt-8 rounded-xl bg-green-600 px-8 py-4 text-white font-semibold hover:bg-green-700 transition"
+            >
+              Shop Products
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

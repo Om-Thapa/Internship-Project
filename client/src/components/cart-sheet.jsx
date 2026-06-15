@@ -135,7 +135,7 @@ export default function CartSheet() {
                 size="lg"
                 className="w-full bg-green-600 hover:bg-green-700"
               >
-                Checkout
+                View Cart
               </Button>
             </Link>
           </SheetClose>

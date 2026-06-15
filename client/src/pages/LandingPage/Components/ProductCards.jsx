@@ -1,21 +1,36 @@
 import { useCartStore } from "@/stores/useCartStore";
+import { Link } from "react-router-dom";
 
-export default function ProductCard({ image, name, price, id }) {
+export default function ProductCard({ product }) {
+  const {
+    id,
+    slug,
+    image,
+    name,
+    category,
+    price,
+    rating,
+  } = product;
+
   const addItem = useCartStore((state) => state.addItem);
 
   return (
     <div className="flex flex-col items-center text-center max-w-sm">
       {/* Product Image */}
       <div className="size-80 flex items-center justify-center overflow-hidden">
-        <img
-          src={image}
-          alt={name}
-          className="max-h-full object-contain transition-transform duration-300 hover:scale-105"
-        />
+        <Link to={`/products/${slug}`}>
+          <img
+            src={image}
+            alt={name}
+            className="max-h-full object-contain transition-transform duration-300 hover:scale-105"
+          />
+        </Link>
       </div>
 
       {/* Product Name */}
-      <h3 className="mt-6 text-xl font-semibold leading-tight">{name}</h3>
+      <Link to={`/products/${slug}`}>
+        <h3 className="mt-6 text-xl font-semibold leading-tight">{name}</h3>
+      </Link>
 
       {/* Price */}
       <p className="mt-4 text-lg font-medium">₹ {price}</p>

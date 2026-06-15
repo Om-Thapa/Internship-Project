@@ -7,6 +7,7 @@ import LandingPage from "./pages/LandingPage/LandingPage";
 import NotFound from "./pages/NotFound/NotFoundPage";
 import CartSheet from "./components/cart-sheet";
 import CartPage from "./pages/CartPage/CartPage";
+import ProductDetailPage from "./pages/ProductDetailPage/ProductDetailPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <ErrorBoundary>
           <Routes>
             <Route path="" element={<LandingPage />} />
+            <Route path="/products/:slug" element={<ProductDetailPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="*" element={<NotFound />} />

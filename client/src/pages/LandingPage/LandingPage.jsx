@@ -7,7 +7,6 @@ import AboutPurePuff from "./Components/AboutPurePuff";
 import products from "@/data/products";
 
 const LandingPage = () => {
-
   return (
     <div className="w-full text-6xl mt-16 text-center">
       {/* Hero Product */}
@@ -53,22 +52,22 @@ const LandingPage = () => {
 
       <section className="mt-10">
         <ProductMockup
-          image="/Purepuff_candy.jpeg"
-          title="Mini Kachori"
-          description="Crispy outside, flavourful inside. Made without palm oil and served with delicious chutneys."
+          image="/candy mockup.png"
+          title="PurePuff Menthol"
+          description="Cooling menthol-infused candy that delivers an instant refreshing sensation."
         />
 
         <ProductMockup
-          image="/Purepuff_candy.jpeg"
-          title="Kolkata Jhalmuri"
-          description="Authentic Bengali street-style snack made with mustard oil and traditional spices."
+          image="/candy mockup.png"
+          title="PurePuff Tulsi"
+          description="Tulsi-rich formulation inspired by traditional herbal wellness practices."
           reverse
         />
 
         <ProductMockup
-          image="/Purepuff_candy.jpeg"
-          title="Dark Choco Kaju Katli"
-          description="A modern twist on traditional Indian sweets. Rich chocolate meets premium cashews."
+          image="/candy mockup.png"
+          title="PurePuff Honey Lemon"
+          description="A soothing combination of honey and lemon with a refreshing finish."
         />
       </section>
 
@@ -78,13 +77,7 @@ const LandingPage = () => {
         </h1>
         <div className="flex flex-wrap justify-around gap-12">
           {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              id={product.id}
-              image={product.image}
-              name={product.name}
-              price={product.price}
-            />
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </section>

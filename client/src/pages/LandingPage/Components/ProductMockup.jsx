@@ -35,9 +35,9 @@ export default function ProductMockup({
             {description}
           </p>
 
-          <button className="mt-8 bg-green-600/80 hover:bg-green-700/80 text-white px-8 py-4 font-semibold rounded-md transition">
+          {/* <button className="mt-8 bg-green-600/80 hover:bg-green-700/80 text-white px-8 py-4 font-semibold rounded-md transition">
             {buttonText}
-          </button>
+          </button> */}
         </div>
       </div>
     </section>
