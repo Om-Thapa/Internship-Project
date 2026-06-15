@@ -5,7 +5,7 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <section className="bg-green-50 py-24">
+      <section className="bg-green-50 py-5">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <span className="text-green-600 font-semibold uppercase tracking-widest">
             PurePuff Collection
@@ -24,7 +24,7 @@ export default function ProductsPage() {
       </section>
 
       {/* Products Grid */}
-      <section className="py-20">
+      <section className="pb-18">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-12">
             {products.map((product) => (

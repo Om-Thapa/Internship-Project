@@ -1,53 +1,54 @@
-import { useCartStore } from "@/stores/useCartStore";
+// ProductCards.jsx
+
 import { Link } from "react-router-dom";
 
-export default function ProductCard({ product }) {
-  const {
-    id,
-    slug,
-    image,
-    name,
-    category,
-    price,
-    rating,
-  } = product;
+import { useCartStore } from "@/stores/useCartStore";
 
-  const addItem = useCartStore((state) => state.addItem);
+export default function ProductCard({ product }) {
+  const addItem = useCartStore(
+    (state) => state.addItem
+  );
 
   return (
-    <div className="flex flex-col items-center text-center max-w-sm">
-      {/* Product Image */}
-      <div className="size-80 flex items-center justify-center overflow-hidden">
-        <Link to={`/products/${slug}`}>
+    <div className="flex flex-col items-center text-center">
+      <Link
+        to={`/products/${product.slug}`}
+        className="block"
+      >
+        <div className="size-80 flex items-center justify-center overflow-hidden">
           <img
-            src={image}
-            alt={name}
+            src={product.image}
+            alt={product.name}
             className="max-h-full object-contain transition-transform duration-300 hover:scale-105"
           />
-        </Link>
-      </div>
-
-      {/* Product Name */}
-      <Link to={`/products/${slug}`}>
-        <h3 className="mt-6 text-xl font-semibold leading-tight">{name}</h3>
+        </div>
       </Link>
 
-      {/* Price */}
-      <p className="mt-4 text-lg font-medium">₹ {price}</p>
+      <span className="mt-4 text-sm font-medium text-green-600 uppercase tracking-wider">
+        {product.category}
+      </span>
 
-      {/* Add to Cart Button */}
-      <button
-        className="mt-8 bg-green-600/80 hover:bg-green-700/80 text-white px-12 py-4 text-lg font-semibold tracking-wide transition-colors"
-        onClick={() =>
-          addItem({
-            id,
-            name,
-            image,
-            price,
-          })
-        }
+      <Link
+        to={`/products/${product.slug}`}
       >
-        + ADD TO CART
+        <h3 className="mt-3 text-xl font-semibold">
+          {product.name}
+        </h3>
+      </Link>
+
+      <p className="mt-2 text-sm text-gray-500">
+        ⭐ {product.rating}
+      </p>
+
+      <p className="mt-4 text-lg font-medium">
+        ₹{product.price}
+      </p>
+
+      <button
+        onClick={() => addItem(product)}
+        className="mt-8 bg-green-600 hover:bg-green-700 text-white px-12 py-4 text-lg font-semibold tracking-wide transition-colors"
+      >
+        Add To Cart
       </button>
     </div>
   );

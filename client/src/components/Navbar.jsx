@@ -40,21 +40,21 @@ const Navbar = () => {
 
                   <SheetClose asChild>
                     <Link
+                      to="/products"
+                      className="text-lg font-semibold text-green-400"
+                    >
+                      Products
+                    </Link>
+                  </SheetClose>
+
+                  <SheetClose asChild>
+                    <Link
                       to="/contact"
                       className="text-lg font-semibold text-green-400"
                     >
                       Contact
                     </Link>
                   </SheetClose>
-
-                  {/* <SheetTrigger>
-                    <Link
-                      to="/#products"
-                      className="text-lg font-semibold text-green-400"
-                    >
-                      Products
-                    </Link>
-                  </SheetTrigger> */}
                 </div>
               </SheetContent>
             </Sheet>
@@ -84,9 +84,9 @@ const Navbar = () => {
             Contact
           </Link>
 
-          {/* <a href="#products" className="transition hover:text-green-600">
+          <Link to="/products" className="transition hover:text-green-600">
             Products
-          </a> */}
+          </Link>
         </div>
 
         {/* Right Side Actions */}

@@ -76,7 +76,7 @@ const LandingPage = () => {
           Our Products
         </h1>
         <div className="flex flex-wrap justify-around gap-12">
-          {products.map((product) => (
+          {products.slice(0, 4).map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
