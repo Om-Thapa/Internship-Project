@@ -1,5 +1,5 @@
 import React from "react";
-import { FaFacebookF, FaInstagram } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -45,10 +45,10 @@ const Footer = () => {
               <p className="text-sm mb-2 text-gray-400">For Queries email us:</p>
 
               <a
-                href="mailto:welovetalking@godesi.in"
+                href="mailto:renmainnovations@gmail.com"
                 className="text-xl font-semibold underline underline-offset-4"
               >
-                welovetalking@purepuff.in
+                renmainnovations@gmail.com
               </a>
             </div>
 
@@ -56,10 +56,10 @@ const Footer = () => {
               <p className="text-sm mb-2 text-gray-400">For Any Order Related Queries</p>
 
               <a
-                href="tel:+919353756891"
+                href="tel:+918076474412"
                 className="text-xl font-semibold underline underline-offset-4"
               >
-                +91 9353756891
+                +91 8076474412
               </a>
             </div>
           </div>
@@ -73,10 +73,10 @@ const Footer = () => {
             {/* Todo Add Links */}
             <div className="flex border border-white/20 w-fit">
               <Link
-                to="#"
+                to="https://www.linkedin.com/in/renma-innovations-private-limited-0153b1405"
                 className="w-16 h-16 flex items-center justify-center border-r border-white/20 hover:bg-white/10 transition"
               >
-                <FaFacebookF size={20} />
+                <FaLinkedin size={20} />
               </Link>
 
               <Link
@@ -110,7 +110,7 @@ const Footer = () => {
             <p className="text-sm text-gray-400">
               © 2026 RENMA INNOVATION Pvt Lmt. All rights reserved.
             </p>
-            <p className="text-sm text-gray-400">CIN: U10733KA2018PTC109651</p>
+            <p className="text-sm text-gray-400">CIN: U10732UT2025PTC018913</p>
             <p className="text-sm text-gray-400">DPIIT No: XXXXXXXX</p>
           </div>
         </div>
