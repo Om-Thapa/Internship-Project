@@ -11,7 +11,7 @@ const Navbar = () => {
   const cartCount = useCartCount();
 
   return (
-    <nav className="fixed inset-x-0 top-0 z-50 bg-white/95 border-b border-green-100 shadow-sm backdrop-blur-sm">
+    <nav className="fixed inset-x-0 top-0 z-50 bg-white/40 backdrop-blur-lg border-b border-green-100 shadow-sm">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <div className="flex items-center text-base font-medium text-gray-700">
           {/* Mobile Navigation */}
@@ -90,12 +90,20 @@ const Navbar = () => {
         </div>
 
         {/* Right Side Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
+          {/* Register Button */}
+          <Link
+            to="/register"
+            className="hidden md:inline-flex px-6 py-2 rounded-full bg-green-600 hover:bg-green-700 text-white font-semibold text-sm transition"
+          >
+            Sign Up
+          </Link>
+
           {/* Cart Button */}
           <button
             type="button"
             onClick={openCart}
-            className="relative rounded-full border border-gray-200 bg-white p-3 text-gray-700 transition hover:border-green-300 hover:text-green-600"
+            className="relative rounded-full border border-gray-200 p-3 text-gray-700 transition hover:border-green-300 hover:text-green-600"
             aria-label="Open cart"
           >
             <ShoppingCart size={24} />

@@ -19,63 +19,65 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#030303] flex items-center justify-center px-4 relative overflow-hidden">
-      <div className="absolute w-[500px] h-[500px] bg-neutral-900/30 rounded-full blur-[140px] top-[-10%] left-[-10%]" />
-      <div className="absolute w-[400px] h-[400px] bg-neutral-900/20 rounded-full blur-[120px] bottom-[-10%] right-[-10%]" />
+    <div className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-slate-100 flex items-center justify-center px-4 relative overflow-hidden">
+      <div className="absolute w-[600px] h-[600px] bg-emerald-100/40 rounded-full blur-[160px] top-[-15%] left-[-15%]" />
+      <div className="absolute w-[500px] h-[500px] bg-slate-100/30 rounded-full blur-[140px] bottom-[-10%] right-[-10%]" />
 
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="w-full max-w-md bg-white/[0.02] border border-white/[0.08] backdrop-blur-xl p-8 rounded-2xl shadow-2xl relative z-10"
+        initial={{ opacity: 0, y: 0 }}
+        animate={{ opacity: 1, y: -40 }}
+        transition={{ duration: 1, ease: "easeOut" }}
+        className="w-full max-w-md bg-white/70 border border-slate-200/60 backdrop-blur-2xl p-10 rounded-3xl shadow-[0_40px_120px_rgba(0,0,0,0.08)] relative z-10"
       >
-        <h2 className="text-3xl font-light tracking-[0.2em] text-white text-center uppercase mb-2">
-          Sign In
+        <h2 className="text-4xl font-semibold tracking-[-0.02em] text-slate-900 text-center mb-2">
+          Welcome Back
         </h2>
-        <p className="text-neutral-500 text-xs text-center tracking-widest mb-8">
-          PUREPUFF INTERFACE HUB
+        <p className="text-slate-500 text-xs text-center tracking-widest uppercase mb-8 font-medium">
+          Sign in to your account
         </p>
 
         {error && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs p-3 rounded mb-4 text-center tracking-wide">
+          <div className="bg-red-50 border border-red-200 text-red-700 text-xs p-4 rounded-2xl mb-6 text-center tracking-wide">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <label className="block text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-2">
-              Secure Email Address
+            <label className="block text-xs uppercase tracking-[0.15em] text-slate-700 font-semibold mb-3">
+              Email Address
             </label>
             <input
               {...register("email", { required: true })}
-              className="w-full bg-white/[0.03] border border-white/[0.1] focus:border-white/30 rounded px-4 py-3 text-sm text-white outline-none transition duration-300"
+              placeholder="you@example.com"
+              className="w-full bg-white/50 border border-slate-200 focus:border-emerald-300 focus:bg-white rounded-2xl px-5 py-4 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.04)]"
             />
           </div>
           <div>
-            <label className="block text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-2">
-              Cryptographic Core Pass
+            <label className="block text-xs uppercase tracking-[0.15em] text-slate-700 font-semibold mb-3">
+              Password
             </label>
             <input
               type="password"
               {...register("password", { required: true })}
-              className="w-full bg-white/[0.03] border border-white/[0.1] focus:border-white/30 rounded px-4 py-3 text-sm text-white outline-none transition duration-300"
+              placeholder="••••••••"
+              className="w-full bg-white/50 border border-slate-200 focus:border-emerald-300 focus:bg-white rounded-2xl px-5 py-4 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.04)]"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 bg-white text-black hover:bg-neutral-200 uppercase font-medium text-xs tracking-[0.2em] rounded transition duration-500 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+            className="w-full py-4 bg-emerald-400 text-white hover:bg-emerald-500 uppercase font-semibold text-xs tracking-[0.2em] rounded-2xl transition duration-500 shadow-[0_18px_60px_rgba(16,185,129,0.22)] hover:shadow-[0_24px_80px_rgba(16,185,129,0.28)]"
           >
-            {loading ? "Processing Cryptography..." : "Authorize Key"}
+            {loading ? "Authenticating..." : "Sign In"}
           </button>
         </form>
-        <div className="mt-6 text-center">
+        <div className="mt-8 text-center">
           <Link
             to="/register"
-            className="text-xs text-neutral-400 hover:text-white transition tracking-wide"
+            className="text-sm text-slate-600 hover:text-emerald-600 transition tracking-wide font-medium"
           >
-            Generate New Access Matrix?
+            Don't have an account? Create one
           </Link>
         </div>
       </motion.div>

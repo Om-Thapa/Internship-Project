@@ -95,95 +95,93 @@ export default function Checkout() {
   };
 
   return (
-    <div className="min-h-screen bg-[#030303] text-white pt-24 pb-12 px-4 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+    <div className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-slate-100 text-slate-900 pt-20 pb-12 px-4 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
       <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        className="bg-white/[0.01] border border-white/[0.08] p-8 rounded-2xl backdrop-blur-xl"
+        initial={{ opacity: 0, x: 0, y:-30 }}
+        animate={{ opacity: 1, x: -30 }}
+        transition={{ duration: 1, ease: "easeOut" }}
+        className="bg-white/70 border border-slate-200/60 backdrop-blur-2xl p-10 rounded-3xl shadow-[0_40px_120px_rgba(0,0,0,0.08)]"
       >
-        <h3 className="text-xl font-light tracking-widest uppercase mb-6 text-neutral-200">
-          System Processing Form
+        <h3 className="text-2xl font-semibold tracking-[-0.02em] mb-8 text-slate-900">
+          Shipping Information
         </h3>
-        <form onSubmit={handleSubmit(onCheckoutSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onCheckoutSubmit)} className="space-y-5">
           <input
             {...register("fullName", { required: true })}
-            placeholder="Full Name Mapping"
-            className="w-full bg-white/[0.02] border border-white/[0.1] rounded p-3 text-sm text-white"
+            placeholder="Full Name"
+            className="w-full bg-white/50 border border-slate-200 focus:border-emerald-300 focus:bg-white rounded-2xl px-5 py-4 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.04)]"
           />
           <input
             {...register("phone", { required: true })}
-            placeholder="Secure Phone Coordinates (Delivery Context Only)"
-            className="w-full bg-white/[0.02] border border-white/[0.1] rounded p-3 text-sm text-white"
+            placeholder="Phone Number"
+            className="w-full bg-white/50 border border-slate-200 focus:border-emerald-300 focus:bg-white rounded-2xl px-5 py-4 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.04)]"
           />
           <input
             {...register("address", { required: true })}
-            placeholder="Line Address Framework"
-            className="w-full bg-white/[0.02] border border-white/[0.1] rounded p-3 text-sm text-white"
+            placeholder="Street Address"
+            className="w-full bg-white/50 border border-slate-200 focus:border-emerald-300 focus:bg-white rounded-2xl px-5 py-4 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.04)]"
           />
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             <input
               {...register("city", { required: true })}
-              placeholder="City Node"
-              className="bg-white/[0.02] border border-white/[0.1] rounded p-3 text-sm text-white"
+              placeholder="City"
+              className="bg-white/50 border border-slate-200 focus:border-emerald-300 focus:bg-white rounded-2xl px-4 py-4 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.04)]"
             />
             <input
               {...register("state", { required: true })}
-              placeholder="State Index"
-              className="bg-white/[0.02] border border-white/[0.1] rounded p-3 text-sm text-white"
+              placeholder="State"
+              className="bg-white/50 border border-slate-200 focus:border-emerald-300 focus:bg-white rounded-2xl px-4 py-4 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.04)]"
             />
             <input
               {...register("pincode", { required: true })}
-              placeholder="Pincode Zone"
-              className="bg-white/[0.02] border border-white/[0.1] rounded p-3 text-sm text-white"
+              placeholder="Pincode"
+              className="bg-white/50 border border-slate-200 focus:border-emerald-300 focus:bg-white rounded-2xl px-4 py-4 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.04)]"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 bg-white text-black text-xs font-semibold uppercase tracking-widest hover:bg-neutral-200 transition mt-6"
+            className="w-full py-4 bg-emerald-400 text-white font-semibold text-sm uppercase tracking-[0.2em] rounded-2xl hover:bg-emerald-500 transition duration-300 shadow-[0_18px_60px_rgba(16,185,129,0.22)] hover:shadow-[0_24px_80px_rgba(16,185,129,0.28)] mt-8"
           >
-            {loading
-              ? "Compiling Orders Vector..."
-              : "Execute Secure Gateway Pipeline"}
+            {loading ? "Processing..." : "Continue to Payment"}
           </button>
         </form>
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, x: 0 , y:-30}}
+        animate={{ opacity: 1, x: -30 }}
+        transition={{ duration: 1, ease: "easeOut" }}
         className="space-y-6"
       >
-        <div className="bg-white/[0.01] border border-white/[0.08] p-8 rounded-2xl backdrop-blur-xl">
-          <h3 className="text-xl font-light tracking-widest uppercase mb-6 text-neutral-200">
-            Terminal Checkout Manifest
+        <div className="bg-white/70 border border-slate-200/60 backdrop-blur-2xl p-10 rounded-3xl shadow-[0_40px_120px_rgba(0,0,0,0.08)]">
+          <h3 className="text-2xl font-semibold tracking-[-0.02em] mb-8 text-slate-900">
+            Order Summary
           </h3>
           {cartItems.map((item) => (
             <div
               key={item.id}
-              className="flex justify-between items-center py-4 border-b border-white/[0.05]"
+              className="flex justify-between items-center py-4 border-b border-slate-200"
             >
               <div>
-                <p className="text-sm font-medium tracking-wide">{item.name}</p>
-                <p className="text-xs text-neutral-500">
-                  Allocation Array: {item.quantity}
-                </p>
+                <p className="text-sm font-semibold text-slate-900">{item.name}</p>
+                <p className="text-xs text-slate-500">Qty: {item.quantity}</p>
               </div>
-              <p className="text-sm font-mono">${item.price * item.quantity}</p>
+              <p className="text-sm font-semibold text-slate-900">₹{item.price * item.quantity}</p>
             </div>
           ))}
-          <div className="pt-6 space-y-2 text-sm text-neutral-400 font-light">
+          <div className="pt-6 space-y-3 text-sm text-slate-600 font-medium">
             <div className="flex justify-between">
-              <span>Core Operations Subtotal</span>
-              <span className="font-mono">${subtotal}</span>
+              <span>Subtotal</span>
+              <span className="font-mono text-slate-900">₹{subtotal}</span>
             </div>
             <div className="flex justify-between">
-              <span>Logistics Routing Variable</span>
-              <span className="font-mono">${shipping}</span>
+              <span>Shipping</span>
+              <span className="font-mono text-slate-900">₹{shipping}</span>
             </div>
-            <div className="flex justify-between text-white font-normal pt-4 border-t border-white/[0.1] text-base">
-              <span>Grand Consolidated Balance</span>
-              <span className="font-mono text-white">${total}</span>
+            <div className="flex justify-between text-slate-900 font-semibold pt-4 border-t border-slate-200 text-base">
+              <span>Total</span>
+              <span className="font-mono">₹{total}</span>
             </div>
           </div>
         </div>

@@ -18,25 +18,30 @@ export default function MyOrders() {
 
   if (loading)
     return (
-      <div className="min-h-screen bg-[#030303] flex items-center justify-center text-neutral-500 tracking-widest animate-pulse">
+      <div className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-slate-100 text-slate-900 flex items-center justify-center tracking-widest animate-pulse">
         SYNCHRONIZING TRANSACTIONS MODULE...
       </div>
     );
 
   return (
-    <div className="min-h-screen bg-[#030303] text-white pt-28 pb-12 px-4 max-w-5xl mx-auto">
-      <h2 className="text-3xl font-light tracking-widest uppercase mb-2">
-        Order Matrix
-      </h2>
-      <p className="text-neutral-500 text-xs tracking-widest uppercase mb-12">
-        Historical Allocation Records Archive
-      </p>
+    <div className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-slate-100 text-slate-900 pt-32 pb-12 px-4 max-w-5xl mx-auto">
+      <div className="mb-12">
+        <h2 className="text-4xl font-semibold tracking-[-0.02em] mb-3">
+          Your Orders
+        </h2>
+        <p className="text-slate-600 text-sm uppercase tracking-[0.2em] font-medium">
+          Track and manage your purchases
+        </p>
+      </div>
 
       {orders.length === 0 ? (
-        <div className="text-center py-24 bg-white/[0.01] border border-white/[0.08] rounded-2xl">
-          <p className="text-neutral-500 tracking-wider">
-            No active deployment parameters discovered.
+        <div className="text-center py-24 bg-white/50 border border-slate-200/60 rounded-3xl shadow-[0_20px_80px_rgba(0,0,0,0.04)]">
+          <p className="text-slate-500 text-lg font-medium">
+            No orders yet. Start shopping!
           </p>
+          <Link to="/products" className="text-emerald-600 hover:text-emerald-700 transition font-semibold mt-4 inline-block">
+            Browse Products
+          </Link>
         </div>
       ) : (
         <div className="space-y-4">
@@ -45,29 +50,32 @@ export default function MyOrders() {
               key={order._id}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-white/[0.02] border border-white/[0.08] p-6 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-white/20 transition duration-300"
+              className="bg-white/50 border border-slate-200/60 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-slate-300 transition duration-300 shadow-[0_10px_40px_rgba(0,0,0,0.04)]"
             >
               <div>
-                <p className="text-xs text-neutral-500 font-mono mb-1">
-                  ID: {order._id}
+                <p className="text-xs text-slate-500 font-mono mb-2">
+                  Order ID: {order._id.slice(0, 8)}...
                 </p>
-                <p className="text-sm text-neutral-300 tracking-wide">
-                  Processed Vector Date:{" "}
-                  {new Date(order.createdAt).toLocaleDateString()}
+                <p className="text-sm font-semibold text-slate-900">
+                  {new Date(order.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
                 </p>
               </div>
               <div className="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end">
                 <div className="text-right">
-                  <p className="text-sm font-mono font-bold">${order.total}</p>
-                  <p className="text-[10px] uppercase tracking-widest text-emerald-400">
+                  <p className="text-sm font-semibold text-slate-900">₹{order.total}</p>
+                  <p className="text-xs uppercase tracking-wider text-emerald-600 font-medium">
                     {order.orderStatus}
                   </p>
                 </div>
                 <Link
                   to={`/orders/${order._id}`}
-                  className="px-4 py-2 border border-white/20 hover:border-white text-xs uppercase tracking-wider rounded transition"
+                  className="px-6 py-2.5 border border-slate-300 hover:border-emerald-300 text-slate-900 hover:text-emerald-600 text-xs uppercase tracking-[0.2em] font-semibold rounded-lg transition duration-300"
                 >
-                  Inspect System Node
+                  Details
                 </Link>
               </div>
             </motion.div>
