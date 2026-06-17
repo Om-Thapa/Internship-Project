@@ -1,4 +1,4 @@
-import ProductCard from "@/pages/LandingPage/Components/ProductCards";
+import ProductCard from "@/components/ProductCards";
 import { products } from "@/data/products";
 
 export default function ProductsPage() {
@@ -26,7 +26,7 @@ export default function ProductsPage() {
       {/* Products Grid */}
       <section className="pb-18">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-12">
+          <div className="flex justify-around flex-wrap gap-12">
             {products.map((product) => (
               <ProductCard
                 key={product.id}

@@ -58,9 +58,9 @@ export default function ProductDetailPage() {
               ₹{product.price}
             </p>
 
-            <p className="mt-6 text-muted-foreground text-lg leading-relaxed">
+            {/* <p className="mt-6 text-muted-foreground text-lg leading-relaxed">
               {product.description}
-            </p>
+            </p> */}
 
             {/* Benefits */}
             <div className="mt-8">
@@ -99,7 +99,7 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Ingredients */}
-        <section className="mt-24">
+        {/* <section className="mt-24">
           <h2 className="text-3xl font-bold mb-8">
             Ingredients
           </h2>
@@ -116,7 +116,7 @@ export default function ProductDetailPage() {
               )
             )}
           </div>
-        </section>
+        </section> */}
 
         {/* How To Use */}
         <section className="mt-24">

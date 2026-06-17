@@ -61,14 +61,14 @@ const Navbar = () => {
           </div>
 
           {/* Logo */}
-          <Link to="/" className="flex gap-6">
+          <Link to="/" className="flex items-center gap-6">
             <div className="object-contain size-12">
               <img src="/LOGO.jpg.jpeg" alt="Logo" />
             </div>
             {/* <div className="object-contain size-12">
               <img src="/FROGGU-removebg-preview.png" alt="Logo" />
             </div> */}
-            <div className="hidden md:block font-sans text-xl font-semibold rounded-2xl bg-green-500/80 px-5 py-3 text-white">
+            <div className="hidden md:block font-sans text-3xl font-bold text-center text-shadow-lg text-green-400">
               PurePuff
             </div>
           </Link>

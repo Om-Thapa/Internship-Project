@@ -1,6 +1,6 @@
 import ImpactStats from "@/pages/LandingPage/Components/ImpactStats";
-import ProductCard from "@/pages/LandingPage/Components/ProductCards";
-import ProductMockup from "@/pages/LandingPage/Components/ProductMockup";
+import ProductCard from "@/components/ProductCards";
+import ProductMockup from "@/components/ProductMockup";
 import React from "react";
 import AboutPurePuff from "./Components/AboutPurePuff";
 
@@ -22,9 +22,9 @@ const LandingPage = () => {
                 Perfect Convenient Snack!
               </h1>
 
-              <p className="mt-6 text-xl">
+              {/* <p className="mt-6 text-xl">
                 Crispy, delicious and packed with flavour.
-              </p>
+              </p> */}
 
               {/* <button className="mt-8 bg-black text-white px-8 py-4 rounded-lg font-semibold">
                 Shop Collection
@@ -50,10 +50,10 @@ const LandingPage = () => {
         <AboutPurePuff />
       </section>
 
-      <section className="mt-10">
+      {/* <section className="mt-10">
         <ProductMockup
-          image="/candy mockup.png"
-          title="PurePuff Menthol"
+          image="/products/Purepuff_candy.jpeg"
+          title="PurePuff Candy"
           description="Cooling menthol-infused candy that delivers an instant refreshing sensation."
         />
 
@@ -69,7 +69,7 @@ const LandingPage = () => {
           title="PurePuff Honey Lemon"
           description="A soothing combination of honey and lemon with a refreshing finish."
         />
-      </section>
+      </section> */}
 
       <section id="products" className="py-20 px-8">
         <h1 className="text-6xl text-green-400 font-bold font-serif">

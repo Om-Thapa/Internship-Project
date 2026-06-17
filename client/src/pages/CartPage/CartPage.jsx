@@ -50,7 +50,7 @@ export default function CartPage() {
             </p>
 
             <Link
-              to="/"
+              to="/products"
               className="mt-8 rounded-xl bg-green-600 px-8 py-4 text-white font-semibold hover:bg-green-700 transition"
             >
               Shop Products

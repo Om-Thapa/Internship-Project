@@ -24,9 +24,9 @@ export default function ProductCard({ product }) {
         </div>
       </Link>
 
-      <span className="mt-4 text-sm font-medium text-green-600 uppercase tracking-wider">
+      {/* <span className="mt-4 text-sm font-medium text-green-600 uppercase tracking-wider">
         {product.category}
-      </span>
+      </span> */}
 
       <Link
         to={`/products/${product.slug}`}
@@ -36,9 +36,9 @@ export default function ProductCard({ product }) {
         </h3>
       </Link>
 
-      <p className="mt-2 text-sm text-gray-500">
+      {/* <p className="mt-2 text-sm text-gray-500">
         ⭐ {product.rating}
-      </p>
+      </p> */}
 
       <p className="mt-4 text-lg font-medium">
         ₹{product.price}
