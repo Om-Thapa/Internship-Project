@@ -24,7 +24,7 @@ export default function VerifyEmail() {
         className="max-w-md w-full bg-white/70 border border-slate-200/60 backdrop-blur-2xl p-10 rounded-3xl shadow-[0_40px_120px_rgba(0,0,0,0.08)] text-center"
       >
         {status === "processing" && (
-          <p className="text-slate-500 tracking-widest animate-pulse font-medium">
+          <p className="text-slate-700 tracking-widest animate-pulse font-medium">
             Verifying your email...
           </p>
         )}

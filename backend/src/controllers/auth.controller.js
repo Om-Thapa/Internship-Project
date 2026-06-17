@@ -17,7 +17,7 @@ exports.register = catchAsync(async (req, res) => {
   if (existingUser)
     return res
       .status(400)
-      .json({ message: "Profile signature already indexed." });
+      .json({ message: "User profile already exist." });
 
   const verificationToken = crypto.randomBytes(32).toString("hex");
 
@@ -58,7 +58,7 @@ exports.login = catchAsync(async (req, res) => {
   if (!user || !(await user.comparePasswords(password, user.password))) {
     return res
       .status(401)
-      .json({ message: "Invalid cryptographic key match." });
+      .json({ message: "Invalid email or password." });
   }
 
   const token = signToken(user._id);

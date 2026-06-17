@@ -1,25 +1,47 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { API, useAuthStore } from "@/stores/authStore";
+import { useCartStore } from "@/stores/useCartStore";
 import { trackEvent } from "@/utils/analytics";
 
 export default function Checkout() {
   const { register, handleSubmit } = useForm();
   const { user } = useAuthStore();
   const [loading, setLoading] = useState(false);
+  const cartItems = useCartStore((state) => state.items);
 
-  // Directly references your custom checkout logic and links to existing state variables
-  const cartItems = [
-    {
-      id: 1,
-      slug: "purepuff-original",
-      name: "PurePuff Original",
-      price: 99,
-      image: "/products/Placeholder.png",
-      quantity: 1,
-    },
-  ];
+  if (cartItems.length === 0) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="max-w-4xl mx-auto py-15">
+          <div className="flex flex-col items-center text-center">
+            {/* Illustration */}
+            <img
+              src="/empty-cart.png"
+              alt="Empty Cart"
+              className="w-72 h-72 object-contain"
+            />
+
+            <h1 className="text-4xl font-bold">🌿 Your Cart Feels Light</h1>
+
+            <p className="mt-4 max-w-md text-lg text-muted-foreground">
+              Add some PurePuff products and take a step toward better
+              respiratory wellness.
+            </p>
+
+            <Link
+              to="/products"
+              className="mt-8 rounded-xl bg-green-600 px-8 py-4 text-white font-semibold hover:bg-green-700 transition"
+            >
+              Shop Products
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const subtotal = cartItems.reduce(
     (acc, curr) => acc + curr.price * curr.quantity,
@@ -44,7 +66,7 @@ export default function Checkout() {
           amount: razorOrderRes.data.amount,
           currency: razorOrderRes.data.currency,
           name: "PUREPUFF CORE",
-          description: "Premium Hardware Sequence Purchase",
+          description: "Product Purchase",
           order_id: razorOrderRes.data.id,
           handler: async function (response) {
             const verification = await API.post("/payment/verify", response);
@@ -68,6 +90,11 @@ export default function Checkout() {
   };
 
   const onCheckoutSubmit = async (formData) => {
+    if (cartItems.length === 0) {
+      alert("Your cart is empty. Add items before checking out.");
+      return;
+    }
+
     setLoading(true);
     trackEvent("begin_checkout", { value: total, currency: "INR" });
     try {
@@ -84,7 +111,9 @@ export default function Checkout() {
         },
       };
       const res = await API.post("/orders", orderPayload);
-      await initPaymentMatrix(res.data);
+
+      // Todo
+      // await initPaymentMatrix(res.data);
     } catch (error) {
       alert(
         error.response?.data?.message || "Order lifecycle processing failure.",

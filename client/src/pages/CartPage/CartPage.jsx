@@ -39,10 +39,8 @@ export default function CartPage() {
               alt="Empty Cart"
               className="w-72 h-72 object-contain"
             />
-            
-            <h1 className="text-4xl font-bold">
-              🌿 Your Cart Feels Light
-            </h1>
+
+            <h1 className="text-4xl font-bold">🌿 Your Cart Feels Light</h1>
 
             <p className="mt-4 max-w-md text-lg text-muted-foreground">
               Add some PurePuff products and take a step toward better
@@ -187,12 +185,14 @@ export default function CartPage() {
                 </div>
               </div>
 
-              <Button
-                size="lg"
-                className="w-full mt-8 bg-green-600 hover:bg-green-700"
-              >
-                Checkout
-              </Button>
+              <Link to="/checkout">
+                <Button
+                  size="lg"
+                  className="w-full mt-8 bg-green-600 hover:bg-green-700"
+                >
+                  Checkout
+                </Button>
+              </Link>
 
               <p className="mt-4 text-xs text-center text-muted-foreground">
                 Taxes calculated at checkout

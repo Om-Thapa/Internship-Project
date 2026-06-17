@@ -1,7 +1,9 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const API = axios.create({ baseURL: "http://localhost:5000/api" });
+const API = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+});
 
 API.interceptors.request.use(
   (config) => {
@@ -56,7 +58,12 @@ export const useAuthStore = create((set) => ({
   },
 
   checkSession: async () => {
-    if (!localStorage.getItem("purepuff_token")) return;
+    const token = localStorage.getItem("purepuff_token");
+
+    if (!token) {
+      set({ user: null, token: null });
+      return;
+    }
     try {
       const res = await API.get("/auth/me");
       set({ user: res.data.user });

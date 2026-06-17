@@ -29,7 +29,7 @@ function App() {
   useEffect(() => {
     checkSession();
     initAnalytics();
-  }, []);
+  }, [checkSession]);
 
   return (
     <>
@@ -40,7 +40,7 @@ function App() {
       <main className="mt-22">
         <ErrorBoundary>
           <Routes>
-            <Route path="" element={<LandingPage />} />
+            <Route path="/" element={<LandingPage />} />
 
             {/* Public Authentication Channels */}
             <Route path="/login" element={<Login />} />

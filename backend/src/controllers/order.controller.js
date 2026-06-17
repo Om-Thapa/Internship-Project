@@ -7,7 +7,7 @@ exports.createOrder = catchAsync(async (req, res) => {
   if (!items || items.length === 0)
     return res
       .status(400)
-      .json({ message: "Operational void: Manifest empty." });
+      .json({ message: "Detials are empty." });
 
   let computedSubtotal = 0;
   const processedItems = [];
@@ -17,7 +17,7 @@ exports.createOrder = catchAsync(async (req, res) => {
     if (!dbProduct)
       return res
         .status(404)
-        .json({ message: `Inventory mismatch for payload key: ${item.id}` });
+        .json({ message: `Product mismatch: ${item.name} for key: ${item.id}` });
     if (dbProduct.stock < item.quantity)
       return res
         .status(400)

@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
   phone: { type: String, required: [true, "Phone required"] },
   password: {
     type: String,
-    required: [true, "Key access required"],
+    required: [true, "Password required"],
     minlength: 6,
   },
   role: { type: String, enum: ["user", "admin"], default: "user" },
