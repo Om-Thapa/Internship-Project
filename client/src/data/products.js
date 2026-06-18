@@ -16,8 +16,8 @@ export const products = [
   {
     id: 1,
     slug: "purepuff-candy",
-    name: "PurePuff Candy",
-    price: 2,
+    name: "PurePuff Candy (Pack of 10)",
+    price: 20,
     image: "/products/Purepuff_candy.jpeg",
     stock: 120,
   },

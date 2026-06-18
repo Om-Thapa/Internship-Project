@@ -113,7 +113,7 @@ export default function Checkout() {
       const res = await API.post("/orders", orderPayload);
 
       // Todo
-      // await initPaymentMatrix(res.data);
+      await initPaymentMatrix(res.data);
     } catch (error) {
       alert(
         error.response?.data?.message || "Order lifecycle processing failure.",

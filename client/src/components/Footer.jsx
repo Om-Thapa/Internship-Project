@@ -1,5 +1,5 @@
 import React from "react";
-import { FaFacebookF, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -71,19 +71,33 @@ const Footer = () => {
             </h4>
 
             {/* Todo Add Links */}
-            <div className="flex border border-white/20 w-fit">
+            <div className="flex flex-wrap border border-white/20 w-fit">
               <Link
-                to="https://www.linkedin.com/in/renma-innovations-private-limited-0153b1405"
+                to="https://www.linkedin.com/in/renma-innovations-private-limited-0153b1405" target="_blank"
                 className="w-16 h-16 flex items-center justify-center border-r border-white/20 hover:bg-white/10 transition"
               >
                 <FaLinkedin size={20} />
               </Link>
 
               <Link
-                to="https://www.instagram.com/renmainnovations"
-                className="w-16 h-16 flex items-center justify-center hover:bg-white/10 transition"
+                to="https://www.instagram.com/renmainnovations" target="_blank"
+                className="w-16 h-16 flex items-center justify-center border-r border-white/20 hover:bg-white/10 transition"
               >
                 <FaInstagram size={20} />
+              </Link>
+              
+              <Link
+                to="https://www.facebook.com/profile.php?id=61590450283659" target="_blank"
+                className="w-16 h-16 flex items-center justify-center border-r border-white/20 hover:bg-white/10 transition"
+              >
+                <FaFacebookF size={20} />
+              </Link>
+
+              <Link
+                to="https://x.com/Renmainnovation/status/2066480917104017603?s=20" target="_blank"
+                className="w-16 h-16 flex items-center justify-center hover:bg-white/10 transition"
+              >
+                <FaTwitter size={20} />
               </Link>
             </div>
           </div>
