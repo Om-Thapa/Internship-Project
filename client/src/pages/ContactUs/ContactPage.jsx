@@ -1,125 +1,304 @@
-import { Mail, Phone, MapPin, Building2 } from "lucide-react";
-import { motion } from "framer-motion";
-export default function ContactPage() {
+import { useState, useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Building2,
+  Send,
+  CheckCircle,
+} from "lucide-react";
+
+function Reveal({ children, delay = 0, className = "" }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
   return (
-    <section className="bg-[#F8FCF8] min-h-screen py-12">
-      <div className="max-w-7xl mx-auto px-6">
-        {/* Header */}
-        <div className="text-center mb-20">
-          <span className="uppercase tracking-[0.3em] text-green-600 font-semibold">
-            Contact PurePuff
-          </span>
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 24 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
-          <h1 className="text-6xl font-bold mt-4">
-            Let's Start a Conversation
-          </h1>
+const CONTACT_DETAILS = [
+  {
+    icon: Mail,
+    title: "Email",
+    detail: "hello@purepuff.in",
+    href: "mailto:hello@purepuff.in",
+  },
+  {
+    icon: Phone,
+    title: "Customer Support",
+    detail: "+91 80764 74412",
+    href: "tel:+918076474412",
+  },
+  {
+    icon: Building2,
+    title: "Business Enquiries",
+    detail: "partnerships@purepuff.in",
+    href: "mailto:partnerships@purepuff.in",
+  },
+  {
+    icon: MapPin,
+    title: "Address",
+    detail: "Renma Innovation Pvt Ltd\nBengaluru, Karnataka, India",
+    href: null,
+  },
+];
 
-          <p className="text-gray-600 text-xl mt-6 max-w-3xl mx-auto">
-            Whether you have questions about our products, want to become a
-            distributor, or simply wish to learn more about respiratory
-            wellness, we're here to help.
-          </p>
+const WHY_CONTACT = [
+  "Product questions & guidance",
+  "Bulk & wholesale orders",
+  "Distribution opportunities",
+  "Corporate wellness programs",
+  "General customer support",
+];
+
+export default function ContactPage() {
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    // Replace with real API call when ready
+    setTimeout(() => {
+      setLoading(false);
+      setSent(true);
+    }, 1400);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#f8fafb]">
+      {/* ── Hero ── */}
+      <section className="relative hero-gradient overflow-hidden pt-32 pb-20">
+        <div className="orb orb-green w-[500px] h-[500px] -top-40 -right-40 opacity-50 absolute pointer-events-none" />
+        <div className="orb orb-teal  w-[300px] h-[300px] bottom-0  -left-20  opacity-30 absolute pointer-events-none" />
+
+        <div className="relative z-10 text-center max-w-3xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-green-600 mb-3 block">
+              Get In Touch
+            </span>
+            <h1 className="text-6xl lg:text-7xl font-black text-slate-900 leading-[1.05]">
+              Let's <span className="gradient-text">Talk</span>
+            </h1>
+            <p className="mt-5 text-lg text-slate-600 leading-relaxed max-w-xl mx-auto">
+              Questions, partnership opportunities, or just want to say hello —
+              we're always happy to hear from you.
+            </p>
+          </motion.div>
         </div>
+      </section>
 
-        {/* Main Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 0.8, y: -20 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          className="grid lg:grid-cols-2 gap-12"
-        >
-          {/* Form */}
-          <div className="bg-white rounded-3xl p-10 shadow-sm border border-green-100">
-            <h2 className="text-3xl font-bold mb-8">Send us a message</h2>
+      {/* ── Main content ── */}
+      <section className="max-w-6xl mx-auto px-6 py-20">
+        <div className="grid lg:grid-cols-2 gap-10">
+          {/* ─── Contact form ─── */}
+          <Reveal>
+            <div className="glass-card rounded-3xl p-8 h-full">
+              {sent ? (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.92 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="h-full flex flex-col items-center justify-center text-center py-10"
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 200,
+                      damping: 15,
+                      delay: 0.1,
+                    }}
+                    className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(52,201,116,0.25)]"
+                  >
+                    <CheckCircle size={30} className="text-green-600" />
+                  </motion.div>
+                  <h3 className="text-2xl font-black text-slate-900">
+                    Message Sent!
+                  </h3>
+                  <p className="text-slate-500 mt-2 text-sm leading-relaxed max-w-xs">
+                    Thanks for reaching out. We'll get back to you within 24
+                    hours.
+                  </p>
+                  <button
+                    onClick={() => setSent(false)}
+                    className="mt-6 text-sm text-green-600 font-semibold hover:text-green-700 underline underline-offset-4 transition-colors"
+                  >
+                    Send another message
+                  </button>
+                </motion.div>
+              ) : (
+                <>
+                  <h2 className="text-2xl font-black text-slate-900 mb-7">
+                    Send a Message
+                  </h2>
+                  <form
+                    onSubmit={handleSubmit}
+                    className="space-y-5"
+                    noValidate
+                  >
+                    {[
+                      {
+                        name: "name",
+                        label: "Full Name",
+                        type: "text",
+                        placeholder: "Jane Doe",
+                      },
+                      {
+                        name: "email",
+                        label: "Email Address",
+                        type: "email",
+                        placeholder: "you@example.com",
+                      },
+                      {
+                        name: "phone",
+                        label: "Phone Number",
+                        type: "tel",
+                        placeholder: "+91 98765 43210",
+                      },
+                    ].map(({ name, label, type, placeholder }) => (
+                      <div key={name}>
+                        <label className="block text-xs font-semibold uppercase tracking-[0.15em] text-slate-600 mb-2">
+                          {label}
+                        </label>
+                        <input
+                          type={type}
+                          name={name}
+                          placeholder={placeholder}
+                          required
+                          className="input-luxury"
+                        />
+                      </div>
+                    ))}
 
-            <form className="space-y-5">
-              <input
-                type="text"
-                placeholder="Full Name"
-                className="w-full border border-gray-200 rounded-xl px-5 py-4 outline-none focus:border-green-600"
-              />
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-[0.15em] text-slate-600 mb-2">
+                        Message
+                      </label>
+                      <textarea
+                        name="message"
+                        rows={5}
+                        placeholder="How can we help you?"
+                        required
+                        className="input-luxury resize-none"
+                      />
+                    </div>
 
-              <input
-                type="email"
-                placeholder="Email Address"
-                className="w-full border border-gray-200 rounded-xl px-5 py-4 outline-none focus:border-green-600"
-              />
+                    <motion.button
+                      whileTap={{ scale: 0.97 }}
+                      type="submit"
+                      disabled={loading}
+                      className="btn-luxury w-full py-4 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2"
+                    >
+                      {loading ? (
+                        <span className="size-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                      ) : (
+                        <>
+                          <Send size={15} /> Send Message
+                        </>
+                      )}
+                    </motion.button>
+                  </form>
+                </>
+              )}
+            </div>
+          </Reveal>
 
-              <input
-                type="tel"
-                placeholder="Phone Number"
-                className="w-full border border-gray-200 rounded-xl px-5 py-4 outline-none focus:border-green-600"
-              />
+          {/* ─── Contact info ─── */}
+          <div className="space-y-5">
+            <Reveal delay={0.1}>
+              <div className="bg-gradient-to-br from-green-600 to-emerald-700 rounded-3xl p-8 text-white relative overflow-hidden">
+                <div className="orb orb-teal w-64 h-64 -top-20 -right-20 opacity-20 absolute pointer-events-none" />
 
-              <textarea
-                rows={6}
-                placeholder="How can we help?"
-                className="w-full border border-gray-200 rounded-xl px-5 py-4 outline-none focus:border-green-600"
-              />
+                <h2 className="text-2xl font-black mb-8 relative z-10">
+                  Reach Us Directly
+                </h2>
 
-              <button className="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-semibold transition">
-                Send Message
-              </button>
-            </form>
-          </div>
-
-          {/* Contact Details */}
-          <div className="bg-green-600 text-white rounded-3xl p-10">
-            <h2 className="text-3xl font-bold mb-10">Reach Us Directly</h2>
-
-            <div className="space-y-8">
-              <div className="flex gap-4">
-                <Mail className="mt-1" />
-                <div>
-                  <p className="font-semibold">Email</p>
-                  <p>hello@purepuff.in</p>
+                <div className="space-y-6 relative z-10">
+                  {CONTACT_DETAILS.map(
+                    ({ icon: Icon, title, detail, href }) => (
+                      <div key={title} className="flex gap-4 items-start">
+                        <div className="size-10 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
+                          <Icon size={18} />
+                        </div>
+                        <div>
+                          <p className="text-white/70 text-xs font-semibold uppercase tracking-wider mb-0.5">
+                            {title}
+                          </p>
+                          {href ? (
+                            <a
+                              href={href}
+                              className="text-sm font-medium hover:text-green-200 transition-colors whitespace-pre-line"
+                            >
+                              {detail}
+                            </a>
+                          ) : (
+                            <p className="text-sm font-medium whitespace-pre-line">
+                              {detail}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ),
+                  )}
                 </div>
               </div>
+            </Reveal>
 
-              <div className="flex gap-4">
-                <Phone className="mt-1" />
-                <div>
-                  <p className="font-semibold">Customer Support</p>
-                  <p>+91 XXXXX XXXXX</p>
-                </div>
+            <Reveal delay={0.15}>
+              <div className="glass-card rounded-2xl p-6">
+                <h3 className="font-bold text-slate-900 text-base mb-4">
+                  We can help with…
+                </h3>
+                <ul className="space-y-3">
+                  {WHY_CONTACT.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-center gap-3 text-sm text-slate-600"
+                    >
+                      <CheckCircle
+                        size={15}
+                        className="text-green-500 flex-shrink-0"
+                      />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
               </div>
+            </Reveal>
 
-              <div className="flex gap-4">
-                <Building2 className="mt-1" />
-                <div>
-                  <p className="font-semibold">Business Enquiries</p>
-                  <p>partnerships@purepuff.in</p>
+            {/* Response time note */}
+            <Reveal delay={0.2}>
+              <div className="glass-card rounded-2xl p-5 flex items-center gap-4">
+                <div className="size-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 text-lg">
+                  ⚡
                 </div>
-              </div>
-
-              <div className="flex gap-4">
-                <MapPin className="mt-1" />
                 <div>
-                  <p className="font-semibold">Address</p>
-                  <p>
-                    Renma Innovation Pvt Ltd
-                    <br />
-                    Bengaluru, Karnataka, India
+                  <p className="text-sm font-bold text-slate-900">
+                    Fast Response
+                  </p>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    We typically reply within 24 hours on business days.
                   </p>
                 </div>
               </div>
-            </div>
-
-            {/* Highlight Box */}
-            <div className="mt-12 bg-white/10 rounded-2xl p-6">
-              <h3 className="font-bold text-xl mb-4">Why Contact PurePuff?</h3>
-
-              <ul className="space-y-2 text-white/90">
-                <li>✓ Product Questions</li>
-                <li>✓ Bulk Orders</li>
-                <li>✓ Distribution Opportunities</li>
-                <li>✓ Corporate Wellness Programs</li>
-                <li>✓ Customer Support</li>
-              </ul>
-            </div>
+            </Reveal>
           </div>
-        </motion.div>
-      </div>
-    </section>
+        </div>
+      </section>
+    </div>
   );
 }

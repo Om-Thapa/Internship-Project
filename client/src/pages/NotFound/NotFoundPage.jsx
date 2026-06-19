@@ -1,46 +1,59 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Home, Mail, ArrowRight } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F8FCF8] px-6 py-12">
-      <div className="text-center max-w-xl w-full">
-        
-        {/* Decorative Visual Element */}
-        <div className="relative flex justify-center mb-8">
-          <div className="absolute inset-0 bg-[#16A34A] opacity-10 blur-3xl rounded-full w-48 h-48 mx-auto -top-4"></div>
-          <h1 className="relative text-9xl font-black tracking-tight text-[#16A34A] select-none">
+    <div className="min-h-screen bg-[#f8fafb] hero-gradient flex items-center justify-center px-6 py-28 relative overflow-hidden">
+      {/* Orbs */}
+      <div className="orb orb-green w-[400px] h-[400px] -top-20 -right-20 opacity-40 absolute pointer-events-none" />
+      <div className="orb orb-teal  w-[300px] h-[300px] bottom-0  -left-10 opacity-30 absolute pointer-events-none" />
+
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        className="relative z-10 text-center max-w-lg"
+      >
+        {/* 404 */}
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className="relative mb-8"
+        >
+          <div className="text-[10rem] font-black leading-none select-none gradient-text text-glow-green">
             404
-          </h1>
-        </div>
+          </div>
+          <div className="absolute inset-0 bg-green-300/20 blur-[60px] -z-10 rounded-full" />
+        </motion.div>
 
-        {/* Message Content */}
-        <h2 className="text-3xl font-bold tracking-tight text-[#111827] sm:text-4xl">
-          Page not found
-        </h2>
-        
-        <p className="mt-4 text-base leading-7 text-[#111827]/70 max-w-md mx-auto">
-          Sorry, we couldn’t find the page you’re looking for. It might have been moved, deleted, or perhaps the URL has a typo.
-        </p>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          <h2 className="text-3xl font-black text-slate-900">Page Not Found</h2>
+          <p className="mt-4 text-slate-500 text-base leading-relaxed max-w-md mx-auto">
+            The page you're looking for doesn't exist, may have moved, or the URL has a typo.
+          </p>
 
-        {/* Action Buttons */}
-        <div className="mt-10 flex items-center justify-center gap-x-6">
-          <Link
-            to="/"
-            className="rounded-md bg-[#16A34A] px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#15803D] focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#16A34A] transition-colors duration-200"
-          >
-            Go back home
-          </Link>
-          
-          <Link
-            to="/contact"
-            className="text-sm font-semibold text-[#111827] hover:text-[#16A34A] transition-colors duration-200 flex items-center gap-1"
-          >
-            Contact Us <span aria-hidden="true">&rarr;</span>
-          </Link>
-        </div>
-
-      </div>
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
+            <Link
+              to="/"
+              className="btn-luxury flex items-center gap-2 px-7 py-3.5 rounded-2xl text-white text-sm font-bold"
+            >
+              <Home size={16} /> Go Home
+            </Link>
+            <Link
+              to="/contact"
+              className="flex items-center gap-2 px-7 py-3.5 rounded-2xl text-sm font-semibold text-slate-700 border border-slate-200 hover:border-green-300 hover:text-green-700 bg-white/70 backdrop-blur transition-all"
+            >
+              <Mail size={16} /> Contact Us <ArrowRight size={14} />
+            </Link>
+          </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

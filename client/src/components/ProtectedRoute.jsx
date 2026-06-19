@@ -1,13 +1,54 @@
 import { useAuthStore } from "@/stores/authStore";
-import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
-export const ProtectedRoute = ({ children }) => {
+function AuthLoader() {
+  return (
+    <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+        className="flex flex-col items-center gap-4"
+      >
+        <div className="size-12 rounded-full border-2 border-green-200 border-t-green-500 animate-spin" />
+        <p className="text-slate-400 text-sm font-medium animate-pulse">
+          Checking session…
+        </p>
+      </motion.div>
+    </div>
+  );
+}
+
+export function ProtectedRoute({ children }) {
   const { token } = useAuthStore();
-  const location = useLocation();
+  const location  = useLocation();
+
+  // Give the auth store one render cycle to hydrate from localStorage
+  // before deciding to redirect — prevents false logout flash on hard refresh
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    // After mount, the Zustand persist middleware has already rehydrated.
+    // A single microtask tick is enough before we gate on `token`.
+    const id = setTimeout(() => setReady(true), 0);
+    return () => clearTimeout(id);
+  }, []);
+
+  if (!ready) return <AuthLoader />;
 
   if (!token) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return (
+      <Navigate
+        to="/login"
+        state={{ from: location, message: "Please sign in to continue." }}
+        replace
+      />
+    );
   }
+
   return children;
-};
+}
+
+export default ProtectedRoute;

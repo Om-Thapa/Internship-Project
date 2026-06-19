@@ -1,84 +1,148 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import { ArrowRight, Package } from "lucide-react";
 import { API } from "@/stores/authStore";
+
+function PageLoader() {
+  return (
+    <div className="min-h-screen bg-[#f8fafb] flex flex-col items-center justify-center gap-4 pt-28">
+      <div className="size-10 rounded-full border-2 border-green-200 border-t-green-500 animate-spin" />
+      <p className="text-slate-500 text-sm font-medium animate-pulse">Confirming your order…</p>
+    </div>
+  );
+}
 
 export default function OrderSuccess() {
   const { orderId } = useParams();
-  const [order, setOrder] = useState(null);
+  const [order,   setOrder]   = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!orderId) return;
     API.get(`/orders/${orderId}`)
-      .then((res) => setOrder(res.data))
-      .catch(console.error);
+      .then((r) => setOrder(r.data))
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, [orderId]);
 
-  if (!order)
+  if (loading) return <PageLoader />;
+
+  if (!order) {
     return (
-      <div className="min-h-screen bg-[#030303] flex items-center justify-center text-neutral-500 tracking-widest animate-pulse">
-        ACQUIRING TRANSACTION SIGNATURE METRICS...
+      <div className="min-h-screen flex flex-col items-center justify-center pt-28 px-4 text-center">
+        <p className="text-xl font-bold text-slate-700">Order not found.</p>
+        <Link to="/my-orders" className="mt-4 text-green-600 font-semibold hover:underline">
+          View my orders
+        </Link>
       </div>
     );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-slate-100 text-slate-900 pt-32 px-4 flex items-center justify-center">
+    <div className="min-h-screen bg-[#f8fafb] hero-gradient flex items-center justify-center px-4 py-28 relative overflow-hidden">
+      {/* Ambient orbs */}
+      <div className="orb orb-green w-[500px] h-[500px] top-0 left-1/2 -translate-x-1/2 opacity-25 absolute pointer-events-none" />
+      <div className="orb orb-teal  w-[300px] h-[300px] bottom-0 right-0           opacity-20 absolute pointer-events-none" />
+
       <motion.div
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className="max-w-xl w-full bg-white/70 border border-slate-200/60 backdrop-blur-2xl p-10 rounded-3xl shadow-[0_40px_120px_rgba(0,0,0,0.08)] text-center"
+        initial={{ scale: 0.92, opacity: 0 }}
+        animate={{ scale: 1,    opacity: 1 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="relative z-10 glass-card rounded-3xl p-10 max-w-md w-full text-center shadow-[0_48px_120px_rgba(0,0,0,0.10)]"
       >
-        <div className="w-20 h-20 bg-emerald-100 border border-emerald-200 rounded-full flex items-center justify-center mx-auto mb-8">
+        {/* Animated checkmark */}
+        <motion.div
+          initial={{ scale: 0, rotate: -15 }}
+          animate={{ scale: 1, rotate: 0   }}
+          transition={{ type: "spring", stiffness: 200, damping: 14, delay: 0.2 }}
+          className="w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center mx-auto mb-6 shadow-[0_8px_32px_rgba(52,201,116,0.40)] glow-green"
+        >
           <svg
-            className="w-10 h-10 text-emerald-600"
+            className="w-10 h-10 text-white"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path
+            <motion.path
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 0.5, delay: 0.5, ease: "easeOut" }}
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth="1.5"
+              strokeWidth="2.5"
               d="M5 13l4 4L19 7"
             />
           </svg>
-        </div>
-        <h2 className="text-4xl font-semibold tracking-[-0.02em] mb-4">
-          Order Confirmed
-        </h2>
-        <p className="text-sm text-slate-600 tracking-wider mb-10 uppercase font-medium">
-          Order ID: {order._id}
-        </p>
+        </motion.div>
 
-        <div className="text-left bg-slate-50/50 border border-slate-200 p-8 rounded-2xl space-y-5 text-sm mb-10">
-          <div className="flex justify-between items-center text-slate-700">
-            <span className="font-medium">Payment Status</span>
-            <span className="text-emerald-600 font-semibold uppercase tracking-wide text-xs">
-              {order.paymentStatus}
-            </span>
-          </div>
-          <div className="flex justify-between items-center text-slate-700 pb-5 border-b border-slate-200">
-            <span className="font-medium">Total Amount</span>
-            <span className="font-mono font-semibold text-slate-900">₹{order.total}</span>
-          </div>
-          <div>
-            <p className="text-xs uppercase tracking-[0.15em] text-slate-600 font-semibold mb-3">
-              Shipping Address
-            </p>
-            <p className="text-slate-700 text-sm leading-relaxed">
-              {order.shippingAddress.address}<br />
-              {order.shippingAddress.city}, {order.shippingAddress.pincode}<br />
-              {order.shippingAddress.state}
-            </p>
-          </div>
-        </div>
-
-        <Link
-          to="/my-orders"
-          className="inline-block px-8 py-3.5 bg-emerald-400 text-white font-semibold uppercase text-xs tracking-[0.2em] rounded-2xl hover:bg-emerald-500 transition duration-300 shadow-[0_18px_60px_rgba(16,185,129,0.22)]"
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0  }}
+          transition={{ delay: 0.4, duration: 0.6 }}
         >
-          View Orders
-        </Link>
+          <h2 className="text-4xl font-black text-slate-900">Order Placed!</h2>
+          <p className="text-slate-500 mt-2 text-sm leading-relaxed">
+            Thank you for your purchase. We'll send shipping updates to your email.
+          </p>
+
+          {/* Order summary card */}
+          <div className="mt-7 glass rounded-2xl p-5 text-left space-y-3">
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-slate-500 font-medium">Order ID</span>
+              <span className="font-mono text-xs text-slate-700 bg-slate-100 px-2 py-1 rounded-lg">
+                #{order._id.slice(-10).toUpperCase()}
+              </span>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-slate-500 font-medium">Payment</span>
+              <span className={order.paymentStatus === "paid" ? "badge-success" : "badge-pending"}>
+                {order.paymentStatus}
+              </span>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-slate-500 font-medium">Status</span>
+              <span className="badge-pending">{order.orderStatus}</span>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-slate-500 font-medium">Items</span>
+              <span className="text-slate-700 font-semibold">{order.items.length}</span>
+            </div>
+            <div className="divider" />
+            <div className="flex justify-between items-center font-black">
+              <span className="text-slate-700">Total Paid</span>
+              <span className="text-slate-900 text-lg">₹{order.total}</span>
+            </div>
+          </div>
+
+          {/* Shipping preview */}
+          <div className="mt-4 glass rounded-2xl px-4 py-3 text-left">
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Shipping To</p>
+            <p className="text-sm text-slate-700 font-medium">
+              {order.shippingAddress.fullName}
+            </p>
+            <p className="text-xs text-slate-500 mt-0.5">
+              {order.shippingAddress.address}, {order.shippingAddress.city},{" "}
+              {order.shippingAddress.state} — {order.shippingAddress.pincode}
+            </p>
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-3 mt-8">
+            <Link
+              to="/my-orders"
+              className="flex-1 btn-luxury py-3.5 rounded-xl text-white text-sm font-bold flex items-center justify-center gap-2"
+            >
+              <Package size={16} /> My Orders
+            </Link>
+            <Link
+              to="/products"
+              className="flex-1 py-3.5 rounded-xl border border-slate-200 hover:border-green-300 text-slate-700 hover:text-green-700 text-sm font-semibold flex items-center justify-center gap-1.5 transition-all duration-200"
+            >
+              Shop More <ArrowRight size={14} />
+            </Link>
+          </div>
+        </motion.div>
       </motion.div>
     </div>
   );

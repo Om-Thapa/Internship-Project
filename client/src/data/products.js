@@ -27,7 +27,7 @@ export const products = [
     slug: "purepuff-mixed-mint",
     name: "PurePuff Mixed Mint",
     price: 10,
-    image: "/products/purepuff-mixed-mint.jpeg",
+    image: "/products/purepuff-mixed-mint.png",
     stock: 95,
   },
 

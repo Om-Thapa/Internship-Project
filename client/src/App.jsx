@@ -1,100 +1,116 @@
-import { Routes, Route } from "react-router-dom";
-import Footer from "./components/Footer";
-import Navbar from "./components/Navbar";
-import ErrorBoundary from "./components/ErrorBoundary";
-import ContactPage from "./pages/ContactUs/ContactPage";
-import LandingPage from "./pages/LandingPage/LandingPage";
-import NotFound from "./pages/NotFound/NotFoundPage";
-import CartSheet from "./components/cart-sheet";
-import CartPage from "./pages/CartPage/CartPage";
-import ProductDetailPage from "./pages/ProductDetailPage/ProductDetailPage";
-import ProductsPage from "./pages/Products/ProductsPage";
-
-import ScrollToTop from "./components/ScrollToTop";
-import { useAuthStore } from "./stores/authStore";
-import { initAnalytics } from "./utils/analytics";
-import Login from "./pages/LoginPage/Login";
-import Register from "./pages/RegisterPage/Register";
-import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
-import { ProtectedRoute } from "./components/ProtectedRoute";
-import Checkout from "./pages/CheckoutPage/Checkout";
-import OrderSuccess from "./pages/OrderSuccessPage/OrderSuccess";
-import MyOrders from "./pages/MyOrdersPage/MyOrders";
-import OrderDetails from "./pages/OrderDetailsPage/OrderDetails";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
+
+import Navbar        from "./components/Navbar";
+import Footer        from "./components/Footer";
+import CartSheet     from "./components/cart-sheet";
+import ErrorBoundary from "./components/ErrorBoundary";
+import ScrollToTop   from "./components/ScrollToTop";
+import { ToastContainer } from "./components/Toast";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { useAuthStore }   from "./stores/authStore";
+import { initAnalytics }  from "./utils/analytics";
+
+// Pages
+import LandingPage       from "./pages/LandingPage/LandingPage";
+import ProductsPage      from "./pages/Products/ProductsPage";
+import ProductDetailPage from "./pages/ProductDetailPage/ProductDetailPage";
+import CartPage          from "./pages/CartPage/CartPage";
+import Checkout          from "./pages/CheckoutPage/Checkout";
+import OrderSuccess      from "./pages/OrderSuccessPage/OrderSuccess";
+import MyOrders          from "./pages/MyOrdersPage/MyOrders";
+import OrderDetails      from "./pages/OrderDetailsPage/OrderDetails";
+import ContactPage       from "./pages/ContactUs/ContactPage";
+import Login             from "./pages/LoginPage/Login";
+import Register          from "./pages/LoginPage/Register";
+import VerifyEmail       from "./pages/VerifyEmailPage/VerifyEmail";
+import NotFound          from "./pages/NotFound/NotFoundPage";
+
+/* ── Page transition wrapper ── */
+const pageVariants = {
+  initial: { opacity: 0, y: 10  },
+  in:      { opacity: 1, y: 0   },
+  out:     { opacity: 0, y: -6  },
+};
+const pageTransition = {
+  type: "tween",
+  duration: 0.35,
+  ease: [0.22, 1, 0.36, 1],
+};
+
+function Page({ children }) {
+  return (
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 function App() {
   const { checkSession } = useAuthStore();
+  const location = useLocation();
 
   useEffect(() => {
     checkSession();
-    initAnalytics();
+    
+    // TODO:
+    // initAnalytics();
   }, [checkSession]);
 
   return (
     <>
       <ScrollToTop />
-
       <Navbar />
 
-      <main className="mt-22">
+      <main className="mt-[72px]">
         <ErrorBoundary>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
+          <AnimatePresence mode="wait" initial={false}>
+            <Routes location={location} key={location.pathname}>
 
-            {/* Public Authentication Channels */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/verify-email" element={<VerifyEmail />} />
+              {/* Public */}
+              <Route path="/"          element={<Page><LandingPage /></Page>} />
+              <Route path="/products"  element={<Page><ProductsPage /></Page>} />
+              <Route path="/products/:slug" element={<Page><ProductDetailPage /></Page>} />
+              <Route path="/contact"   element={<Page><ContactPage /></Page>} />
+              <Route path="/cart"      element={<Page><CartPage /></Page>} />
 
-            {/* Guarded Core Operational Infrastructure */}
-            <Route
-              path="/checkout"
-              element={
-                <ProtectedRoute>
-                  <Checkout />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/order-success/:orderId"
-              element={
-                <ProtectedRoute>
-                  <OrderSuccess />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/my-orders"
-              element={
-                <ProtectedRoute>
-                  <MyOrders />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/orders/:id"
-              element={
-                <ProtectedRoute>
-                  <OrderDetails />
-                </ProtectedRoute>
-              }
-            />
+              {/* Auth */}
+              <Route path="/login"        element={<Page><Login /></Page>} />
+              <Route path="/register"     element={<Page><Register /></Page>} />
+              <Route path="/verify-email" element={<Page><VerifyEmail /></Page>} />
 
-            <Route path="/products" element={<ProductsPage />} />
-            <Route path="/products/:slug" element={<ProductDetailPage />} />
+              {/* Protected */}
+              <Route path="/checkout" element={
+                <ProtectedRoute><Page><Checkout /></Page></ProtectedRoute>
+              } />
+              <Route path="/order-success/:orderId" element={
+                <ProtectedRoute><Page><OrderSuccess /></Page></ProtectedRoute>
+              } />
+              <Route path="/my-orders" element={
+                <ProtectedRoute><Page><MyOrders /></Page></ProtectedRoute>
+              } />
+              <Route path="/orders/:id" element={
+                <ProtectedRoute><Page><OrderDetails /></Page></ProtectedRoute>
+              } />
 
-            <Route path="/contact" element={<ContactPage />} />
+              {/* 404 */}
+              <Route path="*" element={<Page><NotFound /></Page>} />
 
-            <Route path="/cart" element={<CartPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+            </Routes>
+          </AnimatePresence>
         </ErrorBoundary>
       </main>
 
       <CartSheet />
-
       <Footer />
+      <ToastContainer />
     </>
   );
 }
