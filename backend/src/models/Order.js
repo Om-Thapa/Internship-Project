@@ -17,6 +17,18 @@ const orderSchema = new mongoose.Schema({
   shipping: { type: Number, required: true },
   discount: { type: Number, default: 0 },
   total: { type: Number, required: true },
+
+  // ── Payment method ──────────────────────────────────────────────────────
+  // "online" → paid via Razorpay, paymentStatus starts "pending" until verified
+  // "cod"    → Cash on Delivery, paymentStatus starts "pending" and is marked
+  //            "paid" manually by an admin once cash is collected on delivery
+  paymentMethod: {
+    type: String,
+    enum: ["online", "cod"],
+    required: true,
+    default: "online",
+  },
+
   shippingAddress: {
     fullName: { type: String, required: true },
     email: { type: String, required: true },

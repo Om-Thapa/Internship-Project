@@ -2,7 +2,15 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
-import { ArrowRight, Lock, ShoppingBag, CheckCircle, Tag } from "lucide-react";
+import {
+  ArrowRight,
+  Lock,
+  ShoppingBag,
+  CheckCircle,
+  Tag,
+  Wallet,
+  Banknote,
+} from "lucide-react";
 import { API, useAuthStore } from "@/stores/authStore";
 import { useCartStore } from "@/stores/useCartStore";
 import { useCartTotal } from "@/stores/cartSelectors";
@@ -13,6 +21,7 @@ const FREE_SHIPPING_AT = 500;
 const DISCOUNT_AT = 299;
 const DISCOUNT_AMOUNT = 50;
 
+/* ── Field wrapper ───────────────────────────────────────────────────────── */
 function Field({ label, error, children }) {
   return (
     <div>
@@ -29,6 +38,59 @@ function Field({ label, error, children }) {
   );
 }
 
+/* ── Payment method radio card ──────────────────────────────────────────── */
+function PaymentOption({
+  value,
+  selected,
+  onSelect,
+  icon: Icon,
+  title,
+  subtitle,
+  disabled,
+  disabledReason,
+}) {
+  const isActive = selected === value;
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={() => onSelect(value)}
+      className={`relative w-full text-left rounded-2xl border-2 p-5 transition-all duration-200 ${
+        disabled
+          ? "border-slate-100 bg-slate-50 opacity-50 cursor-not-allowed"
+          : isActive
+            ? "border-green-400 bg-green-50/60 shadow-[0_4px_20px_rgba(52,201,116,0.15)]"
+            : "border-slate-200 bg-white/60 hover:border-green-200 hover:bg-green-50/30"
+      }`}
+    >
+      <div className="flex items-start gap-4">
+        <div
+          className={`size-11 rounded-xl flex items-center justify-center flex-shrink-0 ${
+            isActive ? "bg-green-500 text-white" : "bg-slate-100 text-slate-500"
+          }`}
+        >
+          <Icon size={20} />
+        </div>
+        <div className="flex-1">
+          <p className="font-bold text-slate-900 text-sm">{title}</p>
+          <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+            {disabled ? disabledReason : subtitle}
+          </p>
+        </div>
+        {/* Radio indicator */}
+        <div
+          className={`size-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center mt-0.5 ${
+            isActive ? "border-green-500" : "border-slate-300"
+          }`}
+        >
+          {isActive && <div className="size-2.5 rounded-full bg-green-500" />}
+        </div>
+      </div>
+    </button>
+  );
+}
+
+/* ── Razorpay loader ─────────────────────────────────────────────────────── */
 function loadRazorpay() {
   return new Promise((resolve) => {
     if (window.Razorpay) return resolve(true);
@@ -41,6 +103,7 @@ function loadRazorpay() {
   });
 }
 
+/* ── Main component ─────────────────────────────────────────────────────── */
 export default function Checkout() {
   const {
     register,
@@ -53,12 +116,24 @@ export default function Checkout() {
   const subtotal = useCartTotal();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const razorpayConfigured = Boolean(
+    import.meta.env.VITE_RAZORPAY_KEY_ID &&
+    import.meta.env.VITE_RAZORPAY_KEY_ID.trim() !== "",
+  );
+
+  // Default to online if available, otherwise COD
+  const [paymentMethod, setPaymentMethod] = useState(
+    razorpayConfigured ? "online" : "cod",
+  );
   const [loading, setLoading] = useState(false);
 
   const shipping = subtotal >= FREE_SHIPPING_AT ? 0 : 50;
   const discount = subtotal >= DISCOUNT_AT ? DISCOUNT_AMOUNT : 0;
-  const total = subtotal + shipping - discount;
+  const codFee = paymentMethod === "cod" ? 20 : 0;
+  const total = subtotal + shipping - discount + codFee;
 
+  /* ── Empty cart guard ────────────────────────────────────────────────── */
   if (cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-[#f8fafb] flex items-center justify-center pt-28 pb-12 px-4">
@@ -85,10 +160,14 @@ export default function Checkout() {
     );
   }
 
+  /* ── Razorpay payment flow ────────────────────────────────────────────── */
   const initPayment = async (order) => {
     const loaded = await loadRazorpay();
     if (!loaded) {
-      toast.error("Payment gateway unavailable.");
+      toast.error(
+        "Payment gateway unavailable. Please try again or choose Cash on Delivery.",
+      );
+      setLoading(false);
       return;
     }
 
@@ -114,35 +193,36 @@ export default function Checkout() {
         modal: {
           ondismiss: () => {
             setLoading(false);
-            toast.info("Payment cancelled. Your order is saved.");
+            toast.info(
+              "Payment cancelled. Your order is saved — retry anytime from My Orders.",
+            );
           },
         },
         handler: async (response) => {
           try {
             const { data } = await API.post("/payment/verify", response);
             if (data.status === "success") {
-              
-              // TODO
-              // trackEvent("purchase", {
-              //   transaction_id: order._id,
-              //   value: total,
-              //   currency: "INR",
-              // });
-
+              trackEvent("purchase", {
+                transaction_id: order._id,
+                value: total,
+                currency: "INR",
+              });
               clearCart();
               toast.success("Payment successful!");
               setTimeout(() => navigate(`/order-success/${order._id}`), 600);
             }
           } catch {
-            toast.error("Payment verification failed. Contact support.");
+            toast.error(
+              "Payment verification failed. Contact support with your order ID.",
+            );
             setLoading(false);
           }
         },
       };
 
       const rzp = new window.Razorpay(options);
-      rzp.on("payment.failed", (r) => {
-        toast.error(`Payment failed: ${r.error.description}`);
+      rzp.on("payment.failed", (resp) => {
+        toast.error(`Payment failed: ${resp.error.description}`);
         setLoading(false);
       });
       rzp.open();
@@ -154,12 +234,19 @@ export default function Checkout() {
     }
   };
 
+  /* ── Form submit ──────────────────────────────────────────────────────── */
   const onSubmit = async (formData) => {
     setLoading(true);
-    trackEvent("begin_checkout", { value: total, currency: "INR" });
+    trackEvent("begin_checkout", {
+      value: total,
+      currency: "INR",
+      payment_method: paymentMethod,
+    });
+
     try {
       const payload = {
         items: cartItems,
+        paymentMethod,
         shippingAddress: {
           fullName: formData.fullName,
           email: user?.email || "",
@@ -170,15 +257,19 @@ export default function Checkout() {
           pincode: formData.pincode,
         },
       };
+
       const { data: order } = await API.post("/orders", payload);
 
-      // Uncomment when Razorpay keys are configured in .env:
-      await initPayment(order);
-
-      // COD / test mode:
-      clearCart();
-      toast.success("Order placed successfully!");
-      navigate(`/order-success/${order._id}`);
+      if (paymentMethod === "online") {
+        // setLoading(false) happens inside initPayment's handlers
+        await initPayment(order);
+      } else {
+        // COD — order is already confirmed & stock deducted server-side.
+        // Nothing further to do; navigate straight to success.
+        clearCart();
+        toast.success("Order placed! Pay cash when it arrives.");
+        navigate(`/order-success/${order._id}`);
+      }
     } catch (err) {
       toast.error(
         err.response?.data?.message || "Order failed. Please try again.",
@@ -187,9 +278,11 @@ export default function Checkout() {
     }
   };
 
+  /* ── Render ────────────────────────────────────────────────────────────── */
   return (
     <div className="min-h-screen bg-[#f8fafb] pt-28 pb-16">
       <div className="max-w-6xl mx-auto px-6">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -199,93 +292,146 @@ export default function Checkout() {
             Check<span className="gradient-text">out</span>
           </h1>
           <p className="mt-2 text-slate-500 text-sm flex items-center gap-1.5">
-            <Lock size={13} className="text-green-600" /> Secure, encrypted
-            checkout
+            <Lock size={13} className="text-green-600" />
+            Secure, encrypted checkout
           </p>
         </motion.div>
 
         <div className="grid lg:grid-cols-[1fr_400px] gap-10">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="glass-card rounded-3xl p-8"
-          >
-            <h2 className="text-xl font-bold text-slate-900 mb-7 flex items-center gap-2">
-              <span className="size-7 rounded-full bg-green-100 text-green-700 text-xs font-bold flex items-center justify-center">
-                1
-              </span>
-              Shipping Information
-            </h2>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="space-y-5"
-              noValidate
+          {/* ── Left column: form + payment method ── */}
+          <div className="space-y-6">
+            {/* Shipping form */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="glass-card rounded-3xl p-8"
             >
-              <Field label="Full Name" error={errors.fullName}>
-                <input
-                  {...register("fullName", {
-                    required: "Full name is required",
-                  })}
-                  autoComplete="name"
-                  placeholder="Jane Doe"
-                  className={`input-luxury ${errors.fullName ? "border-red-300" : ""}`}
-                />
-              </Field>
-              <Field label="Phone Number" error={errors.phone}>
-                <input
-                  {...register("phone", {
-                    required: "Phone is required",
-                    pattern: {
-                      value: /^[6-9]\d{9}$/,
-                      message: "Valid 10-digit number",
-                    },
-                  })}
-                  autoComplete="tel"
-                  placeholder="98765 43210"
-                  maxLength={10}
-                  className={`input-luxury ${errors.phone ? "border-red-300" : ""}`}
-                />
-              </Field>
-              <Field label="Street Address" error={errors.address}>
-                <input
-                  {...register("address", { required: "Address is required" })}
-                  autoComplete="street-address"
-                  placeholder="123 Green Avenue, Apt 4B"
-                  className={`input-luxury ${errors.address ? "border-red-300" : ""}`}
-                />
-              </Field>
-              <div className="grid grid-cols-3 gap-3">
-                <Field label="City" error={errors.city}>
+              <h2 className="text-xl font-bold text-slate-900 mb-7 flex items-center gap-2">
+                <span className="size-7 rounded-full bg-green-100 text-green-700 text-xs font-bold flex items-center justify-center">
+                  1
+                </span>
+                Shipping Information
+              </h2>
+
+              <form
+                id="checkout-form"
+                onSubmit={handleSubmit(onSubmit)}
+                className="space-y-5"
+                noValidate
+              >
+                <Field label="Full Name" error={errors.fullName}>
                   <input
-                    {...register("city", { required: true })}
-                    autoComplete="address-level2"
-                    placeholder="Bengaluru"
-                    className={`input-luxury ${errors.city ? "border-red-300" : ""}`}
-                  />
-                </Field>
-                <Field label="State" error={errors.state}>
-                  <input
-                    {...register("state", { required: true })}
-                    autoComplete="address-level1"
-                    placeholder="Karnataka"
-                    className={`input-luxury ${errors.state ? "border-red-300" : ""}`}
-                  />
-                </Field>
-                <Field label="Pincode" error={errors.pincode}>
-                  <input
-                    {...register("pincode", {
-                      required: true,
-                      pattern: { value: /^\d{6}$/, message: "6 digits" },
+                    {...register("fullName", {
+                      required: "Full name is required",
                     })}
-                    autoComplete="postal-code"
-                    placeholder="560001"
-                    maxLength={6}
-                    className={`input-luxury ${errors.pincode ? "border-red-300" : ""}`}
+                    autoComplete="name"
+                    placeholder="Jane Doe"
+                    className={`input-luxury ${errors.fullName ? "border-red-300" : ""}`}
                   />
                 </Field>
+
+                <Field label="Phone Number" error={errors.phone}>
+                  <input
+                    {...register("phone", {
+                      required: "Phone is required",
+                      pattern: {
+                        value: /^[6-9]\d{9}$/,
+                        message: "Valid 10-digit number",
+                      },
+                    })}
+                    autoComplete="tel"
+                    placeholder="98765 43210"
+                    maxLength={10}
+                    className={`input-luxury ${errors.phone ? "border-red-300" : ""}`}
+                  />
+                </Field>
+
+                <Field label="Street Address" error={errors.address}>
+                  <input
+                    {...register("address", {
+                      required: "Address is required",
+                    })}
+                    autoComplete="street-address"
+                    placeholder="123 Green Avenue, Apt 4B"
+                    className={`input-luxury ${errors.address ? "border-red-300" : ""}`}
+                  />
+                </Field>
+
+                <div className="grid grid-cols-3 gap-3">
+                  <Field label="City" error={errors.city}>
+                    <input
+                      {...register("city", { required: true })}
+                      autoComplete="address-level2"
+                      placeholder="Bengaluru"
+                      className={`input-luxury ${errors.city ? "border-red-300" : ""}`}
+                    />
+                  </Field>
+                  <Field label="State" error={errors.state}>
+                    <input
+                      {...register("state", { required: true })}
+                      autoComplete="address-level1"
+                      placeholder="Karnataka"
+                      className={`input-luxury ${errors.state ? "border-red-300" : ""}`}
+                    />
+                  </Field>
+                  <Field label="Pincode" error={errors.pincode}>
+                    <input
+                      {...register("pincode", {
+                        required: true,
+                        pattern: { value: /^\d{6}$/, message: "6 digits" },
+                      })}
+                      autoComplete="postal-code"
+                      placeholder="560001"
+                      maxLength={6}
+                      className={`input-luxury ${errors.pincode ? "border-red-300" : ""}`}
+                    />
+                  </Field>
+                </div>
+              </form>
+            </motion.div>
+
+            {/* Payment method selector */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                duration: 0.7,
+                delay: 0.05,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="glass-card rounded-3xl p-8"
+            >
+              <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                <span className="size-7 rounded-full bg-green-100 text-green-700 text-xs font-bold flex items-center justify-center">
+                  2
+                </span>
+                Payment Method
+              </h2>
+
+              <div className="space-y-3">
+                <PaymentOption
+                  value="online"
+                  selected={paymentMethod}
+                  onSelect={setPaymentMethod}
+                  icon={Wallet}
+                  title="Pay Online"
+                  subtitle="UPI, Cards, Netbanking & Wallets via Razorpay — instant confirmation"
+                  disabled={!razorpayConfigured}
+                  disabledReason="Online payment is temporarily unavailable. Please choose Cash on Delivery."
+                />
+                <PaymentOption
+                  value="cod"
+                  selected={paymentMethod}
+                  onSelect={setPaymentMethod}
+                  icon={Banknote}
+                  title="Cash on Delivery"
+                  subtitle={`Pay ₹${total} in cash when your order arrives · ₹20 COD handling fee applies`}
+                />
               </div>
-              <div className="flex flex-wrap gap-4 pt-1 text-xs text-slate-500">
+
+              {/* Trust signals */}
+              <div className="flex flex-wrap gap-4 pt-6 mt-2 border-t border-slate-100 text-xs text-slate-500">
                 {["SSL Secured", "No hidden charges", "Easy returns"].map(
                   (t) => (
                     <span key={t} className="flex items-center gap-1.5">
@@ -294,39 +440,45 @@ export default function Checkout() {
                   ),
                 )}
               </div>
+
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 type="submit"
+                form="checkout-form"
                 disabled={loading}
-                className="btn-luxury w-full py-5 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2 mt-2 disabled:opacity-70"
+                className="btn-luxury w-full py-5 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2 mt-6 disabled:opacity-70"
               >
                 {loading ? (
                   <>
                     <span className="size-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
                     Processing…
                   </>
+                ) : paymentMethod === "online" ? (
+                  <>
+                    <Lock size={16} /> Pay ₹{total} Now
+                  </>
                 ) : (
                   <>
-                    <Lock size={16} /> Place Order — ₹{total}
+                    <Banknote size={16} /> Place Order — Pay ₹{total} on
+                    Delivery
                   </>
                 )}
               </motion.button>
-            </form>
-          </motion.div>
+            </motion.div>
+          </div>
 
+          {/* ── Order summary ── */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="space-y-4"
           >
-            <div className="glass-card rounded-3xl p-7">
-              <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                <span className="size-7 rounded-full bg-green-100 text-green-700 text-xs font-bold flex items-center justify-center">
-                  2
-                </span>
+            <div className="glass-card rounded-3xl p-7 z-10 lg:sticky lg:top-28">
+              <h2 className="text-xl font-bold text-slate-900 mb-6">
                 Order Summary
               </h2>
+
               <div className="space-y-4">
                 {cartItems.map((item) => (
                   <div key={item.id} className="flex items-center gap-3">
@@ -351,7 +503,9 @@ export default function Checkout() {
                   </div>
                 ))}
               </div>
+
               <div className="divider my-5" />
+
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between text-slate-500">
                   <span>Subtotal</span>
@@ -375,21 +529,35 @@ export default function Checkout() {
                     <span className="font-semibold">−₹{discount}</span>
                   </div>
                 )}
+                {codFee > 0 && (
+                  <div className="flex justify-between text-amber-600">
+                    <span>COD Handling Fee</span>
+                    <span className="font-semibold">+₹{codFee}</span>
+                  </div>
+                )}
               </div>
+
               <div className="divider my-4" />
+
               <div className="flex justify-between items-center">
                 <span className="font-bold text-slate-900">Total</span>
                 <span className="text-2xl font-black text-slate-900">
                   ₹{total}
                 </span>
               </div>
+
+              <p className="mt-4 text-xs text-center text-slate-400">
+                {paymentMethod === "online"
+                  ? "You'll be redirected to Razorpay's secure checkout"
+                  : "Keep exact change ready for the delivery agent"}
+              </p>
             </div>
+
             <div className="glass-card rounded-2xl p-5 space-y-3 text-xs text-slate-600">
               {[
                 ["🔒", "256-bit SSL encryption"],
                 ["📦", "Delivery: 3–5 business days"],
                 ["↩️", "Easy 7-day returns"],
-                ["💳", "Secure payment via Razorpay"],
               ].map(([e, t]) => (
                 <div key={t} className="flex items-center gap-2.5">
                   <span>{e}</span>

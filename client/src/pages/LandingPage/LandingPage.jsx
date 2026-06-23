@@ -1,13 +1,14 @@
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
-import { ArrowRight, Wind, Shield, Leaf, Zap } from "lucide-react";
+import { ArrowRight, Wind, Shield, Leaf, Zap, } from "lucide-react";
 
 import ProductCard from "@/components/ProductCards";
 import AboutPurePuff from "./Components/AboutPurePuff";
 import ImpactStats from "./Components/ImpactStats";
 import { API } from "@/stores/authStore";
 import { SkeletonCard } from "../Products/ProductsPage";
+import TemplateCarousel from "./Components/TemplateCarousel";
 // import products from "@/data/products";
 
 /* ─── Reusable reveal wrapper ── */
@@ -114,22 +115,18 @@ export default function LandingPage() {
           }}
         />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 py-32 grid lg:grid-cols-2 gap-16 items-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 grid lg:grid-cols-2 gap-16 items-center">
           {/* Left: copy */}
           <motion.div style={{ y: heroY, opacity: heroOp }}>
-            {/* <motion.div
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <span className="inline-flex items-center gap-2 bg-green-100/80 border border-green-200 text-green-700 text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-full mb-6">
-                <span className="relative flex size-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75" />
-                  <span className="relative inline-flex rounded-full size-2 bg-green-600" />
-                </span>
-                New Launch — PurePuff Candy
-              </span>
-            </motion.div> */}
+              <h1 className="inline-flex items-center gap-2 bg-green-100/80 border border-green-200 text-green-700 text-4xl font-bold uppercase tracking-widest px-4 py-2 rounded-full mb-6">
+                PUREPUFF
+              </h1>
+            </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
@@ -155,7 +152,7 @@ export default function LandingPage() {
               className="mt-6 text-lg text-slate-600 max-w-lg leading-relaxed"
             >
               Non-addictive respiratory wellness products crafted to support
-              lung health and promote cleaner, fresher living — every day.
+              lung health and promote cleaner, fresher living every day.
             </motion.p>
 
             {/* Feature pills */}
@@ -167,8 +164,9 @@ export default function LandingPage() {
             >
               <FeaturePill icon={Leaf} label="Non-Addictive" />
               <FeaturePill icon={Shield} label="Safe Formula" />
-              <FeaturePill icon={Wind} label="Supports Lungs" />
+              <FeaturePill icon={Wind} label="Supports Lungs Detox" />
               <FeaturePill icon={Zap} label="Instant Relief" />
+              <FeaturePill icon={Shield} label="In-Vitro Tested" />
             </motion.div>
 
             {/* CTAs */}
@@ -349,6 +347,11 @@ export default function LandingPage() {
           </Reveal>
         </div>
       </section>
+
+      {/* ═══════════════════════════════════════════════════
+          TEMPLATE CAROUSEL
+      ═══════════════════════════════════════════════════ */}
+      <TemplateCarousel />
 
       {/* ═══════════════════════════════════════════════════
           BOTTOM CTA BAND

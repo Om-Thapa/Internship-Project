@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter, FaYoutube,  } from "react-icons/fa";
 
 const NAV_LINKS = [
   { to: "/", label: "Home" },
@@ -11,14 +11,29 @@ const NAV_LINKS = [
 
 const SOCIAL = [
   {
-    to: "https://www.linkedin.com/in/renma-innovations-private-limited-0153b1405",
-    Icon: FaLinkedin,
-    label: "LinkedIn",
-  },
-  {
     to: "https://www.instagram.com/renmainnovations",
     Icon: FaInstagram,
     label: "Instagram",
+  },
+  {
+    to: "https://x.com/Renmainnovation",
+    Icon: FaTwitter,
+    label: "Instagram",
+  },
+  {
+    to: "https://www.facebook.com/profile.php?id=61590450283659",
+    Icon: FaFacebook,
+    label: "Instagram",
+  },
+  {
+    to: "https://youtube.com/@renmainnovations-w9o",
+    Icon: FaYoutube,
+    label: "Instagram",
+  },
+  {
+    to: "https://www.linkedin.com/in/renma-innovations-private-limited-0153b1405",
+    Icon: FaLinkedin,
+    label: "LinkedIn",
   },
 ];
 
@@ -44,12 +59,13 @@ export default function Footer() {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <span className="font-black text-xl gradient-text">PurePuff</span>
+              <span className="font-black text-xl gradient-text">RENMA</span>
             </Link>
 
             <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
-              Respiratory wellness for everyday life. Clean, natural, effective
-              — made with care in India.
+              Respiratory wellness for everyday life. Clean, natural, effective.
+              <br />
+              Made in India.
             </p>
 
             {/* Social links */}
@@ -106,11 +122,11 @@ export default function Footer() {
               >
                 +91 8076474412
               </a>
-              <p className="text-slate-500 leading-relaxed text-xs">
+              {/* <p className="text-slate-500 leading-relaxed text-xs">
                 Bengaluru, Karnataka
                 <br />
                 India — 560001
-              </p>
+              </p> */}
             </div>
           </div>
 

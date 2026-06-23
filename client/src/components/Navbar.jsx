@@ -63,7 +63,7 @@ export default function Navbar() {
             />
           </div>
           <span className="hidden md:block font-bold text-2xl tracking-tight gradient-text-warm">
-            PurePuff
+            RENMA
           </span>
         </Link>
 

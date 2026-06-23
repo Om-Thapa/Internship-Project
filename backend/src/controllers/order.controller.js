@@ -10,10 +10,18 @@ const DISCOUNT_AMOUNT = 50;
 
 // ── Create order ────────────────────────────────────────────────────────────
 exports.createOrder = catchAsync(async (req, res) => {
-  const { items, shippingAddress } = req.body;
+  const { items, shippingAddress, paymentMethod } = req.body;
 
   if (!items || items.length === 0) {
     return res.status(400).json({ message: "Cart is empty." });
+  }
+
+  // Validate payment method
+  const validMethods = ["online", "cod"];
+  if (!paymentMethod || !validMethods.includes(paymentMethod)) {
+    return res.status(400).json({
+      message: `Invalid payment method. Must be one of: ${validMethods.join(", ")}`,
+    });
   }
 
   // Validate shipping address fields
@@ -69,6 +77,26 @@ exports.createOrder = catchAsync(async (req, res) => {
   const discount = computedSubtotal >= DISCOUNT_THRESHOLD ? DISCOUNT_AMOUNT : 0;
   const grandTotal = computedSubtotal + shippingCost - discount;
 
+  // COD orders skip Razorpay entirely — stock is deducted immediately since
+  // there's no payment gateway to deduct it after verification.
+  // Online orders keep stock untouched until payment.controller verifies payment.
+  if (paymentMethod === "cod") {
+    const stockUpdates = processedItems.map((item) => ({
+      updateOne: {
+        filter: { _id: item.productId, stock: { $gte: item.quantity } },
+        update: { $inc: { stock: -item.quantity } },
+      },
+    }));
+    const bulkResult = await Product.bulkWrite(stockUpdates);
+
+    if (bulkResult.modifiedCount < processedItems.length) {
+      return res.status(409).json({
+        message:
+          "One or more items went out of stock while placing your order. Please review your cart.",
+      });
+    }
+  }
+
   const order = await Order.create({
     userId: req.user._id,
     items: processedItems,
@@ -77,6 +105,9 @@ exports.createOrder = catchAsync(async (req, res) => {
     discount,
     total: grandTotal,
     shippingAddress,
+    paymentMethod,
+    // COD orders stay "pending" until delivery — admin marks "paid" on collection.
+    // Online orders stay "pending" until Razorpay signature verification succeeds.
     paymentStatus: "pending",
     orderStatus: "processing",
   });

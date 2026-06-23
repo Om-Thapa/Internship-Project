@@ -3,10 +3,11 @@ import { motion, useInView } from "framer-motion";
 import { Leaf, Shield, Wind, Zap } from "lucide-react";
 
 const PILLARS = [
-  { icon: Leaf,   text: "Supports respiratory wellness"      },
   { icon: Shield, text: "Non-addictive, safe formulation"    },
+  { icon: Leaf,   text: "Supports respiratory wellness"      },
+  { icon: Zap,    text: "For people living in highly polluted environments"  },
   { icon: Wind,   text: "Portable and affordable for all"    },
-  { icon: Zap,    text: "Creates awareness about pollution"  },
+  { icon: Shield, text: "For tobacco toxicity relief and cessation support"    },
 ];
 
 export default function AboutPurePuff() {

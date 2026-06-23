@@ -25,6 +25,13 @@ exports.createRazorpayOrder = catchAsync(async (req, res) => {
       .json({ message: "This order has already been paid." });
   }
 
+  if (order.paymentMethod === "cod") {
+    return res.status(400).json({
+      message:
+        "This order was placed as Cash on Delivery and does not require online payment.",
+    });
+  }
+
   const amountInPaise = Math.round(order.total * 100);
 
   if (amountInPaise < 100) {
