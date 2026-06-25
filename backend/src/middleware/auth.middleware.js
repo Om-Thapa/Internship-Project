@@ -40,6 +40,27 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 /**
+ * requireEmailVerified — ensures user has verified their email.
+ * Must be used after protect middleware.
+ */
+exports.requireEmailVerified = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({
+      message: "You must be signed in first.",
+    });
+  }
+
+  if (!req.user.isEmailVerified) {
+    return res.status(403).json({
+      message:
+        "Please verify your email address before proceeding. Check your inbox for the verification link.",
+    });
+  }
+
+  next();
+};
+
+/**
  * restrictTo — role-based access guard.
  * Must be used after protect.
  */

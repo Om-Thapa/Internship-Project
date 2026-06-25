@@ -19,12 +19,10 @@ const orderSchema = new mongoose.Schema({
   total: { type: Number, required: true },
 
   // ── Payment method ──────────────────────────────────────────────────────
-  // "online" → paid via Razorpay, paymentStatus starts "pending" until verified
-  // "cod"    → Cash on Delivery, paymentStatus starts "pending" and is marked
-  //            "paid" manually by an admin once cash is collected on delivery
+  // Only online payment via Razorpay is supported
   paymentMethod: {
     type: String,
-    enum: ["online", "cod"],
+    enum: ["online"],
     required: true,
     default: "online",
   },

@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Lock, Mail, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
@@ -92,6 +92,18 @@ export function ErrorAlert({ message }) {
   );
 }
 
+export function InfoAlert({ message }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-amber-50 border border-amber-200 text-amber-700 text-xs p-4 rounded-2xl mb-5 text-center font-medium"
+    >
+      {message}
+    </motion.div>
+  );
+}
+
 export function SubmitButton({ loading, label }) {
   return (
     <motion.button
@@ -123,11 +135,16 @@ export default function Login() {
   } = useForm();
   const { login, error, loading } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const [showPw, setShowPw] = useState(false);
+
+  // Message passed via redirect state (e.g. "please verify email", "please sign in")
+  const redirectMessage = location.state?.message;
+  const redirectTo = location.state?.from?.pathname || "/checkout";
 
   const onSubmit = async (data) => {
     const ok = await login(data);
-    if (ok) navigate("/checkout");
+    if (ok) navigate(redirectTo);
   };
 
   return (
@@ -140,6 +157,7 @@ export default function Login() {
         to: "/register",
       }}
     >
+      {redirectMessage && !error && <InfoAlert message={redirectMessage} />}
       {error && <ErrorAlert message={error} />}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>

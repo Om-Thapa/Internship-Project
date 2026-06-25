@@ -21,9 +21,16 @@ function AuthLoader() {
   );
 }
 
-export function ProtectedRoute({ children }) {
-  const { token } = useAuthStore();
-  const location  = useLocation();
+/**
+ * ProtectedRoute — guards routes behind authentication.
+ *
+ * @param {boolean} requireVerified - if true, also requires the user's
+ *   email to be verified (e.g. for checkout). Redirects to /login with
+ *   a message if the user is logged in but unverified.
+ */
+export function ProtectedRoute({ children, requireVerified = false }) {
+  const { token, user } = useAuthStore();
+  const location = useLocation();
 
   // Give the auth store one render cycle to hydrate from localStorage
   // before deciding to redirect — prevents false logout flash on hard refresh
@@ -43,6 +50,20 @@ export function ProtectedRoute({ children }) {
       <Navigate
         to="/login"
         state={{ from: location, message: "Please sign in to continue." }}
+        replace
+      />
+    );
+  }
+
+  if (requireVerified && user && !user.isEmailVerified) {
+    return (
+      <Navigate
+        to="/login"
+        state={{
+          from: location,
+          message:
+            "Please verify your email before checking out. Check your inbox for the verification link.",
+        }}
         replace
       />
     );

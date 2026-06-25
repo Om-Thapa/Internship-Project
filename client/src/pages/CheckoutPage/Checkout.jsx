@@ -9,7 +9,6 @@ import {
   CheckCircle,
   Tag,
   Wallet,
-  Banknote,
 } from "lucide-react";
 import { API, useAuthStore } from "@/stores/authStore";
 import { useCartStore } from "@/stores/useCartStore";
@@ -35,58 +34,6 @@ function Field({ label, error, children }) {
         </p>
       )}
     </div>
-  );
-}
-
-/* ── Payment method radio card ──────────────────────────────────────────── */
-function PaymentOption({
-  value,
-  selected,
-  onSelect,
-  icon: Icon,
-  title,
-  subtitle,
-  disabled,
-  disabledReason,
-}) {
-  const isActive = selected === value;
-  return (
-    <button
-      type="button"
-      disabled={disabled}
-      onClick={() => onSelect(value)}
-      className={`relative w-full text-left rounded-2xl border-2 p-5 transition-all duration-200 ${
-        disabled
-          ? "border-slate-100 bg-slate-50 opacity-50 cursor-not-allowed"
-          : isActive
-            ? "border-green-400 bg-green-50/60 shadow-[0_4px_20px_rgba(52,201,116,0.15)]"
-            : "border-slate-200 bg-white/60 hover:border-green-200 hover:bg-green-50/30"
-      }`}
-    >
-      <div className="flex items-start gap-4">
-        <div
-          className={`size-11 rounded-xl flex items-center justify-center flex-shrink-0 ${
-            isActive ? "bg-green-500 text-white" : "bg-slate-100 text-slate-500"
-          }`}
-        >
-          <Icon size={20} />
-        </div>
-        <div className="flex-1">
-          <p className="font-bold text-slate-900 text-sm">{title}</p>
-          <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
-            {disabled ? disabledReason : subtitle}
-          </p>
-        </div>
-        {/* Radio indicator */}
-        <div
-          className={`size-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center mt-0.5 ${
-            isActive ? "border-green-500" : "border-slate-300"
-          }`}
-        >
-          {isActive && <div className="size-2.5 rounded-full bg-green-500" />}
-        </div>
-      </div>
-    </button>
   );
 }
 
@@ -117,21 +64,11 @@ export default function Checkout() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const razorpayConfigured = Boolean(
-    import.meta.env.VITE_RAZORPAY_KEY_ID &&
-    import.meta.env.VITE_RAZORPAY_KEY_ID.trim() !== "",
-  );
-
-  // Default to online if available, otherwise COD
-  const [paymentMethod, setPaymentMethod] = useState(
-    razorpayConfigured ? "online" : "cod",
-  );
   const [loading, setLoading] = useState(false);
 
   const shipping = subtotal >= FREE_SHIPPING_AT ? 0 : 50;
   const discount = subtotal >= DISCOUNT_AT ? DISCOUNT_AMOUNT : 0;
-  const codFee = paymentMethod === "cod" ? 20 : 0;
-  const total = subtotal + shipping - discount + codFee;
+  const total = subtotal + shipping - discount;
 
   /* ── Empty cart guard ────────────────────────────────────────────────── */
   if (cartItems.length === 0) {
@@ -161,20 +98,19 @@ export default function Checkout() {
   }
 
   /* ── Razorpay payment flow ────────────────────────────────────────────── */
-  const initPayment = async (order) => {
+  const initPayment = async (checkoutData) => {
     const loaded = await loadRazorpay();
     if (!loaded) {
-      toast.error(
-        "Payment gateway unavailable. Please try again or choose Cash on Delivery.",
-      );
+      toast.error("Payment gateway unavailable. Please try again.");
       setLoading(false);
       return;
     }
 
     try {
-      const { data: razorOrder } = await API.post("/payment/create-order", {
-        orderId: order._id,
-      });
+      const { data: razorOrder } = await API.post(
+        "/payment/create-order",
+        checkoutData,
+      );
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
@@ -187,15 +123,13 @@ export default function Checkout() {
         prefill: {
           name: user?.name || "",
           email: user?.email || "",
-          contact: order.shippingAddress?.phone || "",
+          contact: checkoutData.shippingAddress?.phone || "",
         },
         theme: { color: "#16a34a" },
         modal: {
           ondismiss: () => {
             setLoading(false);
-            toast.info(
-              "Payment cancelled. Your order is saved — retry anytime from My Orders.",
-            );
+            toast.info("Payment cancelled. Please try again.");
           },
         },
         handler: async (response) => {
@@ -203,17 +137,17 @@ export default function Checkout() {
             const { data } = await API.post("/payment/verify", response);
             if (data.status === "success") {
               trackEvent("purchase", {
-                transaction_id: order._id,
+                transaction_id: data.orderId,
                 value: total,
                 currency: "INR",
               });
               clearCart();
-              toast.success("Payment successful!");
-              setTimeout(() => navigate(`/order-success/${order._id}`), 600);
+              toast.success("Payment successful! Order placed.");
+              setTimeout(() => navigate(`/order-success/${data.orderId}`), 600);
             }
-          } catch {
+          } catch (err) {
             toast.error(
-              "Payment verification failed. Contact support with your order ID.",
+              err.response?.data?.message || "Payment verification failed.",
             );
             setLoading(false);
           }
@@ -240,13 +174,12 @@ export default function Checkout() {
     trackEvent("begin_checkout", {
       value: total,
       currency: "INR",
-      payment_method: paymentMethod,
     });
 
     try {
-      const payload = {
+      const checkoutData = {
         items: cartItems,
-        paymentMethod,
+        paymentMethod: "online",
         shippingAddress: {
           fullName: formData.fullName,
           email: user?.email || "",
@@ -258,21 +191,11 @@ export default function Checkout() {
         },
       };
 
-      const { data: order } = await API.post("/orders", payload);
-
-      if (paymentMethod === "online") {
-        // setLoading(false) happens inside initPayment's handlers
-        await initPayment(order);
-      } else {
-        // COD — order is already confirmed & stock deducted server-side.
-        // Nothing further to do; navigate straight to success.
-        clearCart();
-        toast.success("Order placed! Pay cash when it arrives.");
-        navigate(`/order-success/${order._id}`);
-      }
+      // Initiate Razorpay payment
+      await initPayment(checkoutData);
     } catch (err) {
       toast.error(
-        err.response?.data?.message || "Order failed. Please try again.",
+        err.response?.data?.message || "Checkout failed. Please try again.",
       );
       setLoading(false);
     }
@@ -293,12 +216,12 @@ export default function Checkout() {
           </h1>
           <p className="mt-2 text-slate-500 text-sm flex items-center gap-1.5">
             <Lock size={13} className="text-green-600" />
-            Secure, encrypted checkout
+            Secure, encrypted checkout powered by Razorpay
           </p>
         </motion.div>
 
         <div className="grid lg:grid-cols-[1fr_400px] gap-10">
-          {/* ── Left column: form + payment method ── */}
+          {/* ── Left column: form ── */}
           <div className="space-y-6">
             {/* Shipping form */}
             <motion.div
@@ -391,7 +314,7 @@ export default function Checkout() {
               </form>
             </motion.div>
 
-            {/* Payment method selector */}
+            {/* Payment info */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -409,29 +332,25 @@ export default function Checkout() {
                 Payment Method
               </h2>
 
-              <div className="space-y-3">
-                <PaymentOption
-                  value="online"
-                  selected={paymentMethod}
-                  onSelect={setPaymentMethod}
-                  icon={Wallet}
-                  title="Pay Online"
-                  subtitle="UPI, Cards, Netbanking & Wallets via Razorpay — instant confirmation"
-                  disabled={!razorpayConfigured}
-                  disabledReason="Online payment is temporarily unavailable. Please choose Cash on Delivery."
-                />
-                <PaymentOption
-                  value="cod"
-                  selected={paymentMethod}
-                  onSelect={setPaymentMethod}
-                  icon={Banknote}
-                  title="Cash on Delivery"
-                  subtitle={`Pay ₹${total} in cash when your order arrives · ₹20 COD handling fee applies`}
-                />
+              <div className="glass rounded-2xl p-6 border border-green-200 bg-green-50/60 mb-6">
+                <div className="flex items-start gap-4">
+                  <div className="size-11 rounded-xl bg-green-500 text-white flex items-center justify-center flex-shrink-0">
+                    <Wallet size={20} />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-bold text-slate-900 text-sm">
+                      Pay Online
+                    </p>
+                    <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                      UPI, Cards, Netbanking & Wallets via Razorpay — instant
+                      confirmation and receipt
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Trust signals */}
-              <div className="flex flex-wrap gap-4 pt-6 mt-2 border-t border-slate-100 text-xs text-slate-500">
+              <div className="flex flex-wrap gap-4 text-xs text-slate-500">
                 {["SSL Secured", "No hidden charges", "Easy returns"].map(
                   (t) => (
                     <span key={t} className="flex items-center gap-1.5">
@@ -453,14 +372,9 @@ export default function Checkout() {
                     <span className="size-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
                     Processing…
                   </>
-                ) : paymentMethod === "online" ? (
-                  <>
-                    <Lock size={16} /> Pay ₹{total} Now
-                  </>
                 ) : (
                   <>
-                    <Banknote size={16} /> Place Order — Pay ₹{total} on
-                    Delivery
+                    <Lock size={16} /> Pay ₹{total} Now
                   </>
                 )}
               </motion.button>
@@ -529,12 +443,6 @@ export default function Checkout() {
                     <span className="font-semibold">−₹{discount}</span>
                   </div>
                 )}
-                {codFee > 0 && (
-                  <div className="flex justify-between text-amber-600">
-                    <span>COD Handling Fee</span>
-                    <span className="font-semibold">+₹{codFee}</span>
-                  </div>
-                )}
               </div>
 
               <div className="divider my-4" />
@@ -547,9 +455,7 @@ export default function Checkout() {
               </div>
 
               <p className="mt-4 text-xs text-center text-slate-400">
-                {paymentMethod === "online"
-                  ? "You'll be redirected to Razorpay's secure checkout"
-                  : "Keep exact change ready for the delivery agent"}
+                You'll be redirected to Razorpay's secure checkout
               </p>
             </div>
 
